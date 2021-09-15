@@ -4,7 +4,7 @@ from Sim_company import Sim_comp
 
 def menu():
     menu =int(input("""¿Qué desea hacer?:
-    1. Create a new company"""))
+    1. Create a new company \n"""))
 
     return menu
     
@@ -28,11 +28,12 @@ if __name__ == '__main__':
 
 # if menu == 1 set matrix
     if option == 1:
-        num_collaborators = int(input("How many collaborators are there: "))
-        assert num_collaborators > 0, "The number of collaborators has to be a positive number"
+
     
-        Company = Sim_comp(num_collaborators)
+        Company = Sim_comp()
+        Company.set_people()
         Company.set_areas()
+
     else:
         pass
 
