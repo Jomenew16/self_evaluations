@@ -1,4 +1,3 @@
-import names
 
 class Evaluation:
     evaluators: int = 0
@@ -11,14 +10,7 @@ class Evaluation:
         self.evaluators = evaluators
         self.mx_evaluations = mx_evaluations
 
-    def set_interactions(self):
-    # This method builds a random matriz of interactions.
-    # Receives the number of all collaborators. module names provide random list of names
-         
-        collaborators = int(input("How many collaborators are there: "))
-        assert collaborators > 0, "The number of collaborators has to be a positive number"
-        our_names = [names.get_full_name() for i in range(collaborators)]
-        print(our_names)
+
         
 
     def check_matrix(self):
