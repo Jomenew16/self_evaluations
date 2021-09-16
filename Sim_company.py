@@ -38,7 +38,7 @@ class Sim_comp():
     #iniciates the dictionary with the different departments and the sets of people blank
     #initiates a sencond dictionario with the number of collaborators in each area
         def set_subareas(area:list):
-            #submanagers=[]
+            submanagers=[]
             if len(area) > 20:
                 #number of subareas
                 num_subareas = (len(area) // 20) + 1
@@ -47,18 +47,20 @@ class Sim_comp():
                 remainder = len(area) % num_subareas
             
                 sets_floor = 0
-                for i in range(0,num_subareas):
+                for i in range(num_subareas-1):
                     while remainder > 0:
                         self._sets_subareas.append(area[sets_floor:sets_floor + quotient + 1])
-                        #submanagers.append(area[sets_floor])
+                        submanagers.append(area[sets_floor])
                         sets_floor += quotient +1
                         remainder -= 1     
                     self._sets_subareas.append(area[sets_floor:sets_floor + quotient])
-                    #submanagers.append(area[sets_floor])
+                    submanagers.append(area[sets_floor])
                     sets_floor += quotient
-                #print(submanagers)
-                #self._set_submanagers.append(submanagers)
-                #submanagers.clear()
+                print(submanagers)
+                self._set_submanagers.append(list(submanagers))
+                
+                print(f'Los sets submanagers son {self._set_submanagers}')
+                submanagers.clear()
                 
             
             
