@@ -1,7 +1,10 @@
 # This module helps create a made-up company, including different departments, a defined number of employeers, hierarchies and business areas
+#import sys
 import names
 import random
 import pandas as pd
+
+#sys.setrecursionlimit(1000000)
 
 class Sim_comp():
 
@@ -9,20 +12,20 @@ class Sim_comp():
     #  Talent (Max(2%, 1)) Sales (Max(4%,1)), Accounts(Max(0.5%,1)), Purchasing(Max(0,5%),1), 
     # IT(Max(2%,1)), R&D (Max(3%,1), Engineering(3%,1), Legal(Max(1%,1)), Customer service(Max(1%,1), 
     # After sales(Max(1%,1)))    
-    num_collaborators: int = 0
-    _people = []
-    departments = ['Production', 'General management','Administration', 'Talent', 'Sales', 'Accounts', 
-    'Purchasing', 'IT', 'R&D', 'Engineering', 'Legal', 'Customer service', 'After sales', 'Others']
-    #_dept includes de sets of people. _dept_nums just includes and integer with the amount of people
-    _dept = {}
-    _dept_nums = {}
-    _sets_subareas = []
-    _set_managers = []
-    _set_submanagers = []
+
 
 
     def __init__(self) -> None:
-        pass
+        self.num_collaborators: int = 0
+        self._people = []
+        self.departments = ['Production', 'General management','Administration', 'Talent', 'Sales', 'Accounts', 
+        'Purchasing', 'IT', 'R&D', 'Engineering', 'Legal', 'Customer service', 'After sales', 'Others']
+        #_dept includes de sets of people. _dept_nums just includes and integer with the amount of people
+        self._dept = {}
+        self._dept_nums = {}
+        self._sets_subareas = []
+        self._set_managers = []
+        self._set_submanagers = []
  
     
     def set_people(self):
@@ -30,41 +33,40 @@ class Sim_comp():
         self.num_collaborators = int(input("How many collaborators are there: "))
         assert self.num_collaborators > 0, "The number of collaborators has to be a positive number"
         self._people = [names.get_full_name() for i in range(self.num_collaborators)]    
-        #print(self._people)
-    
+        print(self._people)
+
+    def set_subareas(self, area:list):
+        submanagers=[]
+        if len(area) > 20:
+            #number of subareas
+            num_subareas = (len(area) // 20) + 1
+            #people on each subarea
+            quotient = len(area) // num_subareas
+            remainder = len(area) % num_subareas
+        
+            sets_floor = 0
+            j=0 
+            while j < (num_subareas-1) or sets_floor < len(area):
+                while remainder > 0:
+                    self._sets_subareas.append(area[sets_floor:sets_floor + quotient + 1])
+                    submanagers.append(area[sets_floor])
+                    sets_floor += quotient +1
+                    remainder -= 1 
+                    j +=1    
+                self._sets_subareas.append(area[sets_floor:sets_floor + quotient])
+                submanagers.append(area[sets_floor])
+                sets_floor += quotient
+                j +=1
+            
+            self._set_submanagers.append(list(submanagers))
+            #submanagers.clear()    
 
     def set_areas(self):
     # Tis method builds a random matriz of interactions.
     #iniciates the dictionary with the different departments and the sets of people blank
-    #initiates a sencond dictionario with the number of collaborators in each area
-        def set_subareas(area:list):
-            submanagers=[]
-            if len(area) > 20:
-                #number of subareas
-                num_subareas = (len(area) // 20) + 1
-                #people on each subarea
-                quotient = len(area) // num_subareas
-                remainder = len(area) % num_subareas
+    #initiates a sencond dictionario with the number of collaborators in each area     
             
-                sets_floor = 0
-                for i in range(num_subareas-1):
-                    while remainder > 0:
-                        self._sets_subareas.append(area[sets_floor:sets_floor + quotient + 1])
-                        submanagers.append(area[sets_floor])
-                        sets_floor += quotient +1
-                        remainder -= 1     
-                    self._sets_subareas.append(area[sets_floor:sets_floor + quotient])
-                    submanagers.append(area[sets_floor])
-                    sets_floor += quotient
-                print(submanagers)
-                self._set_submanagers.append(list(submanagers))
-                
-                print(f'Los sets submanagers son {self._set_submanagers}')
-                submanagers.clear()
-                
-            
-            
-            
+        
 
         #Receives the list of people of each department, selects a general manager, and divides in subareas with a maximum of 20 people.
         #The first collaborator of each subarea will be its leader
@@ -84,7 +86,7 @@ class Sim_comp():
         ourpeople = list(range(self.num_collaborators))
         people = self.num_collaborators
 
-        
+    # number of people on each department    
         self._dept_nums[self.departments[0]] = round(0.45 * people) # production
         self._dept_nums[self.departments[1]] = round(max(0.02 * people,1)) #gral management
         self._dept_nums[self.departments[2]] = round(0.25 * people) #administration
@@ -107,12 +109,13 @@ class Sim_comp():
                 self._dept[self.departments[i]] = ourpeople[people_floor:people_floor + self._dept_nums[self.departments[i]]]
                 self._set_managers.append(ourpeople[people_floor])
                 #divide each repartment in different subareas, with no more than 20 people
-                set_subareas(self._dept[self.departments[i]])
+                self.set_subareas(self._dept[self.departments[i]])
                 people_floor += self._dept_nums[self.departments[i]]
                 people -= self._dept_nums[self.departments[i]]
                 i += 1
             else:
-                self._dept[self.departments[i]] = ourpeople[people_floor:people_floor + people]
+                self._dept[self.departments[i]] = ourpeople[people_floor:self.num_collaborators]
+                self.set_subareas(self._dept[self.departments[i]])
                 people = 0
         
         print(self._dept)
@@ -138,10 +141,10 @@ class Sim_comp():
         #build & compile different sets of interactions, according to the following rules
         # 1- all the people in the same subarea interact with each other. self.sets_subareas
         # 2- All the business area managers interact with each other. self_set_managers
-        # 3- All the subareas managers interact with the managers of other subaareas in their department .defined
-        # 4 - Talent interacts with everyone
+        # 3- All the subareas managers interact with the managers of other subaareas in their department .defined self_set_submanagers
+        # 4 - Talent interacts with everyone 
         # 5- General management interacts with all area and subarea managers
-        # 6- General managers  of these areas also collaborate:
+        # 6- General managers  of the areas also collaborate:
         # Model is not perfect, for in a real company there are many other channels, but it is a good first approach
 
         self.comp_df = pd.DataFrame(columns=range(self.num_collaborators), index=range(self.num_collaborators))
