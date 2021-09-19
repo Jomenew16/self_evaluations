@@ -20,12 +20,12 @@ class Sim_comp():
         self._people = []
         self.departments = ['Production', 'General management','Administration', 'Talent', 'Sales', 'Accounts', 
         'Purchasing', 'IT', 'R&D', 'Engineering', 'Legal', 'Customer service', 'After sales', 'Others']
-        #_dept includes de sets of people. _dept_nums just includes and integer with the amount of people
-        self._dept = {}
-        self._dept_nums = {}
-        self._sets_subareas = []
-        self._set_managers = []
-        self._set_submanagers = []
+        #__dept includes de sets of people. ___dept_nums just includes and integer with the amount of people
+        self.__dept = {}
+        self.___dept_nums = {}
+        self.__list_subareas = []
+        self.__list_managers = []
+        self.__list_submanagers = []
  
     
     def set_people(self):
@@ -48,34 +48,31 @@ class Sim_comp():
             j=0 
             while j < (num_subareas-1) or sets_floor < len(area):
                 while remainder > 0:
-                    self._sets_subareas.append(area[sets_floor:sets_floor + quotient + 1])
+                    self.__list_subareas.append(area[sets_floor:sets_floor + quotient + 1])
                     submanagers.append(area[sets_floor])
                     sets_floor += quotient +1
                     remainder -= 1 
                     j +=1    
-                self._sets_subareas.append(area[sets_floor:sets_floor + quotient])
+                self.__list_subareas.append(area[sets_floor:sets_floor + quotient])
                 submanagers.append(area[sets_floor])
                 sets_floor += quotient
                 j +=1
-            
-            self._set_submanagers.append(list(submanagers))
+            self.__list_submanagers.append(list(submanagers))
+        else:
+            self.__list_subareas.append(area[:])
+            self.__list_submanagers.append(area[0])
             #submanagers.clear()    
 
     def set_areas(self):
     # Tis method builds a random matriz of interactions.
     #iniciates the dictionary with the different departments and the sets of people blank
     #initiates a sencond dictionario with the number of collaborators in each area     
-            
-        
-
-        #Receives the list of people of each department, selects a general manager, and divides in subareas with a maximum of 20 people.
-        #The first collaborator of each subarea will be its leader
-            
-        
-        
+    #Receives the list of people of each department, selects a general manager, and divides in subareas with a maximum of 20 people.
+    #The first collaborator of each subarea will be its leader
+                   
         for i in range(len(self.departments)):
-            self._dept[self.departments[i]] = []
-            self._dept_nums[self.departments[i]] = 0
+            self.__dept[self.departments[i]] = []
+            self.___dept_nums[self.departments[i]] = 0
     
     # Assign people to different areas. We will generate in order, so the results will be organized by area    
     # Rules of assigment: Production (45% of employees) General management (Max(2%,1)) Administration (25%)  
@@ -87,72 +84,91 @@ class Sim_comp():
         people = self.num_collaborators
 
     # number of people on each department    
-        self._dept_nums[self.departments[0]] = round(0.45 * people) # production
-        self._dept_nums[self.departments[1]] = round(max(0.02 * people,1)) #gral management
-        self._dept_nums[self.departments[2]] = round(0.25 * people) #administration
-        self._dept_nums[self.departments[3]] = round(max(0.03 * people,1)) # talent
-        self._dept_nums[self.departments[4]] = round(max(0.05 * people, 1)) #sales
-        self._dept_nums[self.departments[5]] = round(max(0.005 * people,1)) #accounts
-        self._dept_nums[self.departments[6]] = round(max(0.005 * people,1)) #purchasing
-        self._dept_nums[self.departments[7]] = round(max(0.03 * people,1)) # IT
-        self._dept_nums[self.departments[8]] = round(max(0.03 * people,1)) #R&D
-        self._dept_nums[self.departments[9]] = round(max(0.04 * people,1)) #Engineering
-        self._dept_nums[self.departments[10]] = round(max(0.02 * people,1)) # Legal
-        self._dept_nums[self.departments[11]] = round(max(0.02 * people,1)) #customer service
-        self._dept_nums[self.departments[12]] = round(max(0.02 * people,1)) #after sales
-        self._dept_nums[self.departments[13]] = 0 # others
+        self.___dept_nums[self.departments[0]] = round(0.45 * people) # production
+        self.___dept_nums[self.departments[1]] = round(max(0.02 * people,1)) #gral management
+        self.___dept_nums[self.departments[2]] = round(0.25 * people) #administration
+        self.___dept_nums[self.departments[3]] = round(max(0.03 * people,1)) # talent
+        self.___dept_nums[self.departments[4]] = round(max(0.05 * people, 1)) #sales
+        self.___dept_nums[self.departments[5]] = round(max(0.005 * people,1)) #accounts
+        self.___dept_nums[self.departments[6]] = round(max(0.005 * people,1)) #purchasing
+        self.___dept_nums[self.departments[7]] = round(max(0.03 * people,1)) # IT
+        self.___dept_nums[self.departments[8]] = round(max(0.03 * people,1)) #R&D
+        self.___dept_nums[self.departments[9]] = round(max(0.04 * people,1)) #Engineering
+        self.___dept_nums[self.departments[10]] = round(max(0.02 * people,1)) # Legal
+        self.___dept_nums[self.departments[11]] = round(max(0.02 * people,1)) #customer service
+        self.___dept_nums[self.departments[12]] = round(max(0.02 * people,1)) #after sales
+        self.___dept_nums[self.departments[13]] = 0 # others
         
         people_floor = 0
         i=0
         while people > 0:
             if i < 13:
-                self._dept[self.departments[i]] = ourpeople[people_floor:people_floor + self._dept_nums[self.departments[i]]]
-                self._set_managers.append(ourpeople[people_floor])
+                self.__dept[self.departments[i]] = ourpeople[people_floor:people_floor + self.___dept_nums[self.departments[i]]]
+                self.__list_managers.append(ourpeople[people_floor])
                 #divide each repartment in different subareas, with no more than 20 people
-                self.set_subareas(self._dept[self.departments[i]])
-                people_floor += self._dept_nums[self.departments[i]]
-                people -= self._dept_nums[self.departments[i]]
+                self.set_subareas(self.__dept[self.departments[i]])
+                people_floor += self.___dept_nums[self.departments[i]]
+                people -= self.___dept_nums[self.departments[i]]
                 i += 1
             else:
-                self._dept[self.departments[i]] = ourpeople[people_floor:self.num_collaborators]
-                self.set_subareas(self._dept[self.departments[i]])
+                self.__dept[self.departments[i]] = ourpeople[people_floor:self.num_collaborators]
+                self.set_subareas(self.__dept[self.departments[i]])
                 people = 0
         
-        print(self._dept)
-        print(self._sets_subareas)
-        print(f'Los submanagers son: {self._set_submanagers}')
+        print(self.__dept)
+        print(self.__list_subareas)
+        print(f'Los submanagers son: {self.__list_submanagers}')
 
     # REceives the number of all collaborators
     
     
+    def set_interactions(self,list_int: list, df):
+#The function receives a list of data and the DataFrame of the company and includes de interactions
+        for i in range(0 , len(list_int)):
+            for j in range(i+1,len(list_int)):
+                df.iloc[list_int[i],list_int[j]] = True
+                df.iloc[list_int[j],list_int[i]] = True
+        return df
     
     def build_interactions(self):
-    #This method receives a set or a group of sets and creates the DataFrame with
-    #     
-        def set_interactions(set_int, df):
-        #The function receives a set of data and the DataFrame of the company and includes de interactions
-            list1= list(set_int)    
-            for i in range(0 , len(list1)):
-                for j in range(i+1,len(list1)):
-                    df.iloc[list1[i],list1[j]] = True
-                    df.iloc[list1[j],list1[i]] = True
-            return df
-                
+    #This method creates the empty DataFrame with two dimensiones of the number of collaborators
+    #Then it calls to the method set_interactions and develop the DataFrame according to the following rules:  
+               
         #build & compile different sets of interactions, according to the following rules
-        # 1- all the people in the same subarea interact with each other. self.sets_subareas
-        # 2- All the business area managers interact with each other. self_set_managers
-        # 3- All the subareas managers interact with the managers of other subaareas in their department .defined self_set_submanagers
+        # 1- all the people in the same subarea interact with each other. self.__list_subareas
+        # 2- All the business area managers interact with each other. self__list_managers
+        # 3- All the subareas managers interact with the managers of other subaareas in their department .defined self__list_submanagers
         # 4 - Talent interacts with everyone 
         # 5- General management interacts with all area and subarea managers
         # 6- General managers  of the areas also collaborate:
         # Model is not perfect, for in a real company there are many other channels, but it is a good first approach
 
+#self.__dept = {}
+#        self.___dept_nums = {}
+#        self.__list_subareas = []
+#        self.__list_managers = []
+#        self.__list_submanagers = []
+        
+        # blank dataframe
         self.comp_df = pd.DataFrame(columns=range(self.num_collaborators), index=range(self.num_collaborators))
-        set1 = {0, 1,3,5}
-        set2= {7,8, 9}
-        self.comp_df = set_interactions(set1,self.comp_df)
-        #print(self.comp_df)
-        self.comp_df = set_interactions(set2,self.comp_df)
+        
+        #1 . self.__sets_subareas
+        for i in range(len(self.__list_subareas)):
+            self.comp_df = self.set_interactions(self.__list_subareas[i],self.comp_df)
+        
+        #2. self.__list_managers (Managers)
+        self.comp_df = self.set_interactions(self.__list_managers,self.comp_df)
+
+        #3. subarea managers interact with othe subarea manegers within their gral department
+        for i in range(0,len(self.__list_submanagers)):
+            if isinstance(self.__list_submanagers[i],list):
+                self.comp_df = self.set_interactions(self.__list_submanagers[i],self.comp_df)
+            
+        #4. Talent interacts with everyone
+        
+
+        print(self.comp_df)
+        #self.comp_df = self.set_interactions(set2,self.comp_df)
         #print(self.comp_df)
 
 
@@ -168,12 +184,12 @@ class Sim_comp():
         #   print(administration)
         #   print(people)
         #print(Grl_management)
-        #print(self._dept_nums)
+        #print(self.___dept_nums)
 
     #    
     #    rand_person = random.choice(ourpeople)
     #    print("Una persona al azar : " + str(rand_person))
-    #    self._dept['Production'].add(rand_person)
+    #    self.__dept['Production'].add(rand_person)
     #    ourpeople.remove(rand_person)
     #    #ourpeople = ourpeople.pop()
     #    print(ourpeople)
@@ -181,12 +197,12 @@ class Sim_comp():
     ## seleccionar un número aleatorio de valores en la lista de ourpeople
 #
 #
-    #    for k, v in sorted(self._dept.items()):
+    #    for k, v in sorted(self.__dept.items()):
     #        pass
 #
 #
-    #    self._dept['Talent']= {3, 2, 5}
-    #    print(self._dept)
+    #    self.__dept['Talent']= {3, 2, 5}
+    #    print(self.__dept)
     #    #initiate a set with the index of        
 
 #Company = Sim_comp() 
