@@ -1,5 +1,6 @@
 # This module helps create a made-up company, including different departments, a defined number of employeers, hierarchies and business areas
 #import sys
+from typing import Type
 import names
 import random
 import pandas as pd
@@ -138,7 +139,7 @@ class Sim_comp():
         # 1- all the people in the same subarea interact with each other. self.__list_subareas
         # 2- All the business area managers interact with each other. self__list_managers
         # 3- All the subareas managers interact with the managers of other subaareas in their department .defined self__list_submanagers
-        # 4 - Talent interacts with everyone 
+        # 4 - Talent submanagers interacts with everyone 
         # 5- General management interacts with all area and subarea managers
         # 6- General managers  of the areas also collaborate:
         # Model is not perfect, for in a real company there are many other channels, but it is a good first approach
@@ -164,9 +165,52 @@ class Sim_comp():
             if isinstance(self.__list_submanagers[i],list):
                 self.comp_df = self.set_interactions(self.__list_submanagers[i],self.comp_df)
             
-        #4. Talent interacts with everyone
+        #4. Talent submanagers interact with everyone
+        #Generate small lists of pairs (a talent submanager with everyone else)
         
+        
+        collaborators = range(self.num_collaborators)
 
+        if isinstance(self.__list_submanagers[3], list):
+            for i in range(len(self.__list_submanagers[3])):   
+                for j in collaborators:
+                    if self.__list_submanagers[3][i] != collaborators[j]:
+                        pair =[self.__list_submanagers[3][i],collaborators[j]]
+                        self.comp_df = self.set_interactions(pair,self.comp_df)
+        else:
+            for j in collaborators:
+                    if self.__list_submanagers[3] != collaborators[j]:
+                        pair =[self.__list_submanagers[3],collaborators[j]]
+                        self.comp_df = self.set_interactions(pair,self.comp_df)
+                    
+        #5. Gral management interacts with submanagers
+        #Generate small lists of pairs (a talent submanager with everyone else)
+        
+        #create a list of integers with all the submanagers
+        full_submanagers = []
+
+        for i in range(len(self.__list_submanagers)):
+            if isinstance (self.__list_submanagers[i], list):
+                for j in range(len(self.__list_submanagers[i])):
+                    full_submanagers.append(self.__list_submanagers[i][j])
+            else:
+                full_submanagers.append(self.__list_submanagers[i])
+        
+        print(f'lista nueva de submanagers {full_submanagers}')
+  
+        if isinstance(self.__list_submanagers[1], list):
+            for i in range(len(self.__list_submanagers[1])):   
+                for j in range(len(full_submanagers)):
+                    if self.__list_submanagers[1][i] != full_submanagers[j]:
+                        pair =[self.__list_submanagers[1][i],full_submanagers[j]]
+                        self.comp_df = self.set_interactions(pair,self.comp_df)
+        else:
+            for j in range(len(full_submanagers)):
+                if self.__list_submanagers[1] != full_submanagers[j]:
+                    pair =[self.__list_submanagers[1],full_submanagers[j]]
+                    self.comp_df = self.set_interactions(pair,self.comp_df)                  
+       
+#
         print(self.comp_df)
         #self.comp_df = self.set_interactions(set2,self.comp_df)
         #print(self.comp_df)
