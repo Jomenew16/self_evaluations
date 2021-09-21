@@ -1,9 +1,7 @@
-<<<<<<< HEAD
 venv/
 *.json
 *.jpg
 *.png
-=======
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -133,4 +131,5 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
->>>>>>> 2af4a25bfa2e2e57354bc13e96b2c9119b59749b
+
+*.xlsx

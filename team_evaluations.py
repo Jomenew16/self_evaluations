@@ -31,10 +31,10 @@ if __name__ == '__main__':
 
     
         Company = Sim_comp()
-        Company.set_people()
+        Company.set_company()
         
-        Company.set_areas()
-        Company.build_interactions()
+        #Company.set_areas()
+        #Company.build_interactions()
 
     else:
         pass

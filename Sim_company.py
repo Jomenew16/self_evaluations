@@ -1,9 +1,10 @@
 # This module helps create a made-up company, including different departments, a defined number of employeers, hierarchies and business areas
 #import sys
+from os import replace
 from typing import Type
 import names
-import random
 import pandas as pd
+from pandas import ExcelWriter
 
 #sys.setrecursionlimit(1000000)
 
@@ -27,14 +28,31 @@ class Sim_comp():
         self.__list_subareas = []
         self.__list_managers = []
         self.__list_submanagers = []
+        self.__column_dept = []
+
  
     
-    def set_people(self):
+    def set_company(self):
         
-        self.num_collaborators = int(input("How many collaborators are there: "))
-        assert self.num_collaborators > 0, "The number of collaborators has to be a positive number"
+        while self.num_collaborators <7:
+            self.num_collaborators = input("How many collaborators are there?: ")
+            try:    
+                self.num_collaborators = int(self.num_collaborators)
+            except:
+                print("The input has to be an integer")
+            finally:
+                if isinstance(self.num_collaborators, int):
+                    if self.num_collaborators >= 7:
+                        pass
+                    else:
+                        print("\n The company must have at least 7 collaborators \n")
+                else:
+                    self.num_collaborators = 0 
+
+
         self._people = [names.get_full_name() for i in range(self.num_collaborators)]    
         print(self._people)
+        self.set_areas()
 
     def set_subareas(self, area:list):
         submanagers=[]
@@ -102,10 +120,14 @@ class Sim_comp():
         
         people_floor = 0
         i=0
+        
         while people > 0:
             if i < 13:
                 self.__dept[self.departments[i]] = ourpeople[people_floor:people_floor + self.___dept_nums[self.departments[i]]]
                 self.__list_managers.append(ourpeople[people_floor])
+                #we will use this list to build de final DF
+                [self.__column_dept.append(self.departments[i]) for j in range(self.___dept_nums[self.departments[i]])]
+                
                 #divide each repartment in different subareas, with no more than 20 people
                 self.set_subareas(self.__dept[self.departments[i]])
                 people_floor += self.___dept_nums[self.departments[i]]
@@ -116,9 +138,11 @@ class Sim_comp():
                 self.set_subareas(self.__dept[self.departments[i]])
                 people = 0
         
+        print(self.__column_dept)
         print(self.__dept)
         print(self.__list_subareas)
         print(f'Los submanagers son: {self.__list_submanagers}')
+        self.build_interactions()
 
     # REceives the number of all collaborators
     
@@ -141,14 +165,8 @@ class Sim_comp():
         # 3- All the subareas managers interact with the managers of other subaareas in their department .defined self__list_submanagers
         # 4 - Talent submanagers interacts with everyone 
         # 5- General management interacts with all area and subarea managers
-        # 6- General managers  of the areas also collaborate:
         # Model is not perfect, for in a real company there are many other channels, but it is a good first approach
 
-#self.__dept = {}
-#        self.___dept_nums = {}
-#        self.__list_subareas = []
-#        self.__list_managers = []
-#        self.__list_submanagers = []
         
         # blank dataframe
         self.comp_df = pd.DataFrame(columns=range(self.num_collaborators), index=range(self.num_collaborators))
@@ -210,8 +228,27 @@ class Sim_comp():
                     pair =[self.__list_submanagers[1],full_submanagers[j]]
                     self.comp_df = self.set_interactions(pair,self.comp_df)                  
        
-#
+        
+        self.comp_df.set_axis(self._people, axis=1, inplace=True)
+        #introducir una columna con los departamentos
+        
+        #insertamos columna en posición 0
+        self.comp_df.insert(0,'Collaborators',self._people)
+        self.comp_df.set_index(['Collaborators'], inplace=True)
+        self.comp_df.insert(0, 'Areas', self.__column_dept)
+        
+        person = self.comp_df.loc[self._people[4],:]
+        
+        self.comp_df.replace(True, 1, inplace=True)
+        self.comp_df.to_csv('./archivos/interacciones.csv')
+        
+        with ExcelWriter('./archivos/interacciones.xlsx') as writer:
+            self.comp_df.to_excel(writer)
+        print(person)
         print(self.comp_df)
+        
+        
+        
         #self.comp_df = self.set_interactions(set2,self.comp_df)
         #print(self.comp_df)
 
