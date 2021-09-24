@@ -33,11 +33,10 @@ class Evaluation:
 
     #Drop the column of Areas
         self.__matrix.drop(columns=['Areas','Collaborators'], axis=1, inplace=True)    
-        print(self.__matrix)
+        
         
     # check that the interactions are well built. The matrix is symmetrical    
         if self.__matrix.values.all() == self.__matrix.values.T.all():
-            print("The matrix is symmetrical")
             self.__collaborators = list(self.__matrix.columns)
             self.__num_collaborators = len(self.__collaborators)
             self.read_interactions()
@@ -99,10 +98,10 @@ class Evaluation:
                     self.__mx_evaluators = 0 
 
         #inicializar las listas self.__evaluates[] y self.__evaluators[], con su número de elementos
-        self.__evaluates = [[]] * self.__num_collaborators
-        self.__evaluators = [[]] * self.__num_collaborators
+        self.__evaluates = [[] for i in range(0,self.__num_collaborators)] 
+        self.__evaluators = [[] for i in range(0,self.__num_collaborators)]
         self.__num_evaluates = [0] * self.__num_collaborators #Num of evaluates of each evaluator (it will help to prioritize those who has less evaluations)
-        print(self.__evaluates)
+        
         #For each position (collaborator), in the list self.__list_interactions, choose a random evaluator while
         #cond 1. the number of evaluator is less than self.__mx_evaluators
         #cond 2. The evaluator is conducting to many evaluations
@@ -116,45 +115,62 @@ class Evaluation:
 
             def filter_min(list_top_evaluators, number_evaluates):
                 #this function receives the evaluators who have more than the top number of evaluates and choses 1 with the minimum number among them
-                num_eval = [number_evaluates[i] for i in list_top_evaluators] #a list with number of evaluates of the top evaluators
-                min_eval = min(num_eval) #provides de minimum number of evaluates among the top evaluators
-                final_min =  [list_top_evaluators[k] for k,v in enumerate(num_eval) if v == min_eval] # a list with the top evaluators with less evaluates
-                if len(final_min) > 1:
+                if len(list_top_evaluators) > 1:
+                    num_eval = [number_evaluates[i] for i in list_top_evaluators] #a list with number of evaluates of the top evaluators
+                    min_eval = min(num_eval) #provides de minimum number of evaluates among the top evaluators
+                    final_min =  [list_top_evaluators[k] for k,v in enumerate(num_eval) if v == min_eval] # a list with the top evaluators with less evaluates
+                    print("mínimo", final_min)
                     return random.choice(final_min)
                 else:
-                    return int(final_min)
+                    return list_top_evaluators[0]
+                #else:
+                #    print("no quedan evaluadores ¿se acaba?")
 
-            if len(self.__evaluators[person_index]):
-                while len(self.__evaluators[person_index]) < num_evaluators or len(self.__evaluators[person_index]) < len(list_colb):
-
+            
+            #First evaluator when the dim is 0
+            evaluator = int(random.choice(colb_aux))
+            self.__evaluates[evaluator].append(person_index)
+            self.__evaluators[person_index].append(evaluator)
+            #print("Evaluates in process", self.__evaluates)
+            #print("Evaluators in process", self.__evaluators)
+            #print("Evaluator", evaluator)
+            #print("person index", "person_index")
+            self.__num_evaluates[evaluator] += 1
+            colb_aux.remove(evaluator)  
+        
+            while len(self.__evaluators[person_index]) < num_evaluators and len(self.__evaluators[person_index]) < len(list_colb):
+                
+                if len(colb_aux) >= 1:
                     evaluator = int(random.choice(colb_aux))
-                    print("aquí: ", colb_aux)
-                    print("más: ",evaluator)
-
-                    if len(colb_aux) == 0: #there are no collaborators in the original list, we check the new list with those calobarators with more evaluates
-                    #top_evaluator have the people with more evaluates than originally capped. 
-                    ##among the top evaluators, we will chose those with less evaluates using __num_evaluates
-                        evaluator = filter_min(top_evaluators, self.__num_evaluates)
+                    #print("colb_aux: ", colb_aux)
+                    #print("evaluator", evaluator)
+                    if self.__num_evaluates[evaluator] < num_evaluations: #¿cuál es la lista de evaluadores?
                         self.__evaluates[evaluator].append(person_index)
                         self.__evaluators[person_index].append(evaluator)
-                        self.__num_evaluates[evaluator] += 1
-                        top_evaluators.remove(evaluator)
-
-                    elif self.__num_evaluates[evaluator] < num_evaluations: #¿cuál es la lista de evaluadores?
-                        self.__evaluates[evaluator].append(person_index)
-                        self.__evaluators[person_index].append(evaluator)
+                        #print("Evaluates in process", self.__evaluates)
+                        #print("Evaluators in process", self.__evaluators)
+                        #print("Evaluator", evaluator)
+                        #print("person index", person_index)
                         self.__num_evaluates[evaluator] += 1
                         colb_aux.remove(evaluator)    
-
                     elif self.__num_evaluates[evaluator] == num_evaluations:
                         top_evaluators.append(evaluator)
                         colb_aux.remove(evaluator)
-            else:
-                evaluator = int(random.choice(colb_aux))
-                self.__evaluates[evaluator].append(person_index)
-                self.__evaluators[person_index].append(evaluator)
-                self.__num_evaluates[evaluator] += 1
-                colb_aux.remove(evaluator)    
+                    else:
+                        colb_aux.remove(evaluator)
+
+                elif len(top_evaluators) >= 1:
+                #if len(colb_aux) is 0: #there are no collaborators in the original list, we check the new list with those calobarators with more evaluates
+                #top_evaluator have the people with more evaluates than originally capped. 
+                ##among the top evaluators, we will chose those with less evaluates using __num_evaluates
+                    evaluator = filter_min(top_evaluators, self.__num_evaluates)
+                    self.__evaluates[evaluator].append(person_index)
+                    self.__evaluators[person_index].append(evaluator)
+                    self.__num_evaluates[evaluator] += 1
+                    top_evaluators.remove(evaluator)
+                else:
+                    break
+                
 
 
 
