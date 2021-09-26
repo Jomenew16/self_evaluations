@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 from pandas.core import indexing
 import random
+import csv
 
 class Evaluation:
  
@@ -70,7 +71,7 @@ class Evaluation:
 
     # List of lists with the index of each interaction
         self.__list_interactions = [list(self.__matrix.loc[i,:].dropna()) for i in range(self.__num_collaborators)]
-        print(self.__list_interactions)
+    
     
     #With this list, we will build the evaluators & evaluates...
         self.set_evaluators()
@@ -119,7 +120,7 @@ class Evaluation:
                     num_eval = [number_evaluates[i] for i in list_top_evaluators] #a list with number of evaluates of the top evaluators
                     min_eval = min(num_eval) #provides de minimum number of evaluates among the top evaluators
                     final_min =  [list_top_evaluators[k] for k,v in enumerate(num_eval) if v == min_eval] # a list with the top evaluators with less evaluates
-                    print("mínimo", final_min)
+                    
                     return random.choice(final_min)
                 else:
                     return list_top_evaluators[0]
@@ -131,10 +132,6 @@ class Evaluation:
             evaluator = int(random.choice(colb_aux))
             self.__evaluates[evaluator].append(person_index)
             self.__evaluators[person_index].append(evaluator)
-            #print("Evaluates in process", self.__evaluates)
-            #print("Evaluators in process", self.__evaluators)
-            #print("Evaluator", evaluator)
-            #print("person index", "person_index")
             self.__num_evaluates[evaluator] += 1
             colb_aux.remove(evaluator)  
         
@@ -142,15 +139,10 @@ class Evaluation:
                 
                 if len(colb_aux) >= 1:
                     evaluator = int(random.choice(colb_aux))
-                    #print("colb_aux: ", colb_aux)
-                    #print("evaluator", evaluator)
+                    
                     if self.__num_evaluates[evaluator] < num_evaluations: #¿cuál es la lista de evaluadores?
                         self.__evaluates[evaluator].append(person_index)
                         self.__evaluators[person_index].append(evaluator)
-                        #print("Evaluates in process", self.__evaluates)
-                        #print("Evaluators in process", self.__evaluators)
-                        #print("Evaluator", evaluator)
-                        #print("person index", person_index)
                         self.__num_evaluates[evaluator] += 1
                         colb_aux.remove(evaluator)    
                     elif self.__num_evaluates[evaluator] == num_evaluations:
@@ -172,18 +164,30 @@ class Evaluation:
                     break
                 
 
-
-
-
         for i in range(self.__num_collaborators):
             random_evaluators(self.__list_interactions[i], i,self.__mx_evaluators, self.__mx_evaluations) #no need to pass general parameters
         
-        print(f'Evaluates {self.__evaluates}')
-        print(f'Evaluators: {self.__evaluators}')
-    #self.__evaluators = [] #It is a list o lists. Index number of people by whom the person on each index is evaluated
-    #self.__evaluates = [] #It is a list of list. Index number of people who evaluates the person
+
+        def prepare_4_writing(list_of_people):
+            #This function introduces the evaluate & evaluators in the first position of the lists and turn index into the actual names
+            first_list =list_of_people.copy()
+            [first_list[i].insert(0, i) for i in range(self.__num_collaborators)] # inserts the evaluate or evaluator
+            list4writing = [list(map(lambda x: self.__collaborators[x], first_list[i])) for i in range(self.__num_collaborators)]
+            return list4writing
+           
+
+        with open('./archivos/evaluations.csv', 'w', newline='') as ev_file:
+            map_evaluations = csv.writer(ev_file)
+            map_evaluations.writerow(['This file includes de evaluations to be conducted by each collaborator'])
+            map_evaluations.writerow(['Evaluator','Evaluates'])
+            map_evaluations.writerows(prepare_4_writing(self.__evaluates))
+        
+        with open('./archivos/evaluators.csv', 'w', newline='') as evt_file:
+            map_evaluations = csv.writer(evt_file)
+            map_evaluations.writerow(['This file includes de evaluators of each collaborator'])
+            map_evaluations.writerow(['Collaborator','Evaluators'])
+            map_evaluations.writerows(prepare_4_writing(self.__evaluators))
+                
         
 
-ev1 = Evaluation()
-ev1.check_matrix()  
     

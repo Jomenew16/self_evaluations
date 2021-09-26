@@ -51,7 +51,7 @@ class Sim_comp():
 
 
         self._people = [names.get_full_name() for i in range(self.num_collaborators)]    
-        print(self._people)
+        
         self.set_areas()
 
     def set_subareas(self, area:list):
@@ -136,12 +136,10 @@ class Sim_comp():
             else:
                 self.__dept[self.departments[i]] = ourpeople[people_floor:self.num_collaborators]
                 self.set_subareas(self.__dept[self.departments[i]])
+                [self.__column_dept.append(self.departments[i]) for j in range(people)]
                 people = 0
         
-        print(self.__column_dept)
-        print(self.__dept)
-        print(self.__list_subareas)
-        print(f'Los submanagers son: {self.__list_submanagers}')
+        
         self.build_interactions()
 
     # REceives the number of all collaborators
@@ -214,7 +212,6 @@ class Sim_comp():
             else:
                 full_submanagers.append(self.__list_submanagers[i])
         
-        print(f'lista nueva de submanagers {full_submanagers}')
   
         if isinstance(self.__list_submanagers[1], list):
             for i in range(len(self.__list_submanagers[1])):   
@@ -242,10 +239,9 @@ class Sim_comp():
         self.comp_df.replace(True, 1, inplace=True)
         self.comp_df.to_csv('./archivos/interacciones.csv')
         
-        with ExcelWriter('./archivos/interacciones.xlsx') as writer:
-            self.comp_df.to_excel(writer)
-        print(person)
-        print(self.comp_df)
+        #with ExcelWriter('./archivos/interacciones.xlsx') as writer:
+        #    self.comp_df.to_excel(writer)
+        
         
         
         

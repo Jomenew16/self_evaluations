@@ -1,10 +1,13 @@
 
 
 from Sim_company import Sim_comp
+from Evaluations import *
 
 def menu():
-    menu =int(input("""¿Qué desea hacer?:
-    1. Create a new company \n"""))
+    menu =int(input("""¿What do you want to do?:
+    1. Simulate a new company \n
+    2. Setup the team evaluations\n
+    3. Exit program\n"""))
 
     return menu
     
@@ -24,18 +27,20 @@ def menu():
 if __name__ == '__main__':
 
 # Read menu
-    option = menu()
+    option = 0
+    while option != 3:
+        option = menu()
 
-# if menu == 1 set matrix
-    if option == 1:
+    # if menu == 1 set matrix
+        if option == 1:
 
-    
-        Company = Sim_comp()
-        Company.set_company()
-        
-        #Company.set_areas()
-        #Company.build_interactions()
+            Company = Sim_comp()
+            Company.set_company()
 
-    else:
-        pass
+            #Company.set_areas()
+            #Company.build_interactions()
+
+        elif option == 2:
+            ev1 = Evaluation()
+            ev1.check_matrix()  
 
