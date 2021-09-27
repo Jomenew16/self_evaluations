@@ -162,7 +162,43 @@ class Evaluation:
                     top_evaluators.remove(evaluator)
                 else:
                     break
-                
+
+        def build_frameworks(evaluates):
+            #This methof creates the files for each collaborator to conduct the evaluations
+            #The evaluations consist in X simple questions to be evaluted from 1 to 4
+
+            #We will build a DataFrame for each evaluator with the questions in row, and the evaluates in row
+            #As Headline we will include name of the evaluator, date, number of evaluates and the score system
+
+            #list of questions
+            questions = [
+                "¿Tiene una disposición constructiva orientada a solucionar problemas sin prejuicios ni opiniones preconcebidas?",
+                "¿Contribuye a que haya un ambiente positivo de trabajo y evita los chismes, rumores y políticas perniciosos?",
+                "¿Se conduce con respeto a los compañeros de Natura sin ser ofensivo?",
+                "¿Tiene actitud analítica respecto de los problemas, aporta perspectiva y considera los objetivos del equipo o la empresa?",
+                "¿Antepone los objetivos grupales o de equipo a los personales?",
+                "¿Tiene disposición a consultar y pedir consejo y opinión a los demás, admitiendo otras sugerencias y puntos de vista?",
+                "¿Agradece la contribución a los compañeros y colaboradores y reconoce sus méritos?",
+                "¿Se ofrece y se involucra en las problemáticas de los demás?",
+                "¿Escucha a los demás y admite otras sugerencias y puntos de vista?",
+                "¿Sus tareas las realiza en tiempo?",
+                "¿Domina los aspectos técnicos de sus trabajo?",
+                "¿Es concienzudo en su desempeño y se preocupa de asegurar y mejorar la calidad en cuanto hace?",
+                "¿Tiene disposición a crecer y formarse de manera continua?",
+                "¿Comparte sus conocimientos y colabora en la formación de los demás?",
+                "¿Hace propuestas y sugerencias de mejora?",
+                "¿Se implica en las mejoras, tiene iniciativa y emprende acciones aunque no se le hayan solicitado?",
+                "¿Anima y motiva a los demás a participar y hacer propuestas?",
+                "Teniendo todo en cuenta ¿cómo valoraría el compromiso y las contribución del colaborador a los objetivos globales, como equipo y como empresa?"
+            ]
+        
+            for i in range(self.__num_collaborators):
+                form = pd.DataFrame(index=questions, columns=evaluates[i][1:])
+                print(form)
+                evaluator = evaluates[i][0]
+                path = './archivos/Evaluaciones/{}_form.csv'.format(evaluator)    
+                form.to_csv(path, header=True, index=True, encoding='utf-8-sig')            
+
 
         for i in range(self.__num_collaborators):
             random_evaluators(self.__list_interactions[i], i,self.__mx_evaluators, self.__mx_evaluations) #no need to pass general parameters
@@ -187,6 +223,46 @@ class Evaluation:
             map_evaluations.writerow(['This file includes de evaluators of each collaborator'])
             map_evaluations.writerow(['Collaborator','Evaluators'])
             map_evaluations.writerows(prepare_4_writing(self.__evaluators))
+        
+        build_frameworks(prepare_4_writing(self.__evaluates))
+
+    def fill_evaluations(self):
+        #This function sets a randomly list of grades for each of the question in the forms according to randomly selected scores
+        #For consistency, employees respond to different types of behabiours
+        types_of_employees = ["bad", "average", "good"]
+        #ranges of score
+        
+        #def score(empl_type):
+        #    
+        #    def wrapper(change):
+        #    #4 levels of score
+        #    
+        #        if type_range == 4:
+        #            return 4
+        #        elif type_range == 3:
+        #            return random.randint(3,4)
+        #        elif type_range == 2:
+        #            return random.randint(1,2)
+        #        elif type_range == 1:
+        #            return 1
+        #    return wrapper
+        #                
+        ##randomly chooses a type of employee
+        #type_of_employee = types_of_employees.choice()
+        #
+        #score(type_of_employee)
+        #def list_of_answers():
+
+
+
+        #There are 18 question. Every 3 questions, the level of score changes ramdomly
+        # If good employee, level of score may be 3 or for
+        # # IF average, level of score 2 or 3
+        # if bad, leve 1 or 2
+
+
+
+
                 
         
 
