@@ -230,28 +230,48 @@ class Evaluation:
         #This function sets a randomly list of grades for each of the question in the forms according to randomly selected scores
         #For consistency, employees respond to different types of behabiours
         types_of_employees = ["bad", "average", "good"]
+        self.cont = 0
+        grades = []
+        print("hola")
+
         #ranges of score
         
-        #def score(empl_type):
-        #    
-        #    def wrapper(change):
-        #    #4 levels of score
-        #    
-        #        if type_range == 4:
-        #            return 4
-        #        elif type_range == 3:
-        #            return random.randint(3,4)
-        #        elif type_range == 2:
-        #            return random.randint(1,2)
-        #        elif type_range == 1:
-        #            return 1
-        #    return wrapper
-        #                
-        ##randomly chooses a type of employee
-        #type_of_employee = types_of_employees.choice()
-        #
-        #score(type_of_employee)
-        #def list_of_answers():
+        def score(empl_type, type):     
+
+            def wrapper():        
+                
+                if type == 4:
+                    return 4
+                elif type == 3:
+                    return random.randint(3,4)
+                elif type == 2:
+                    return random.randint(1,2)
+                elif type == 1:
+                    return 1
+            return wrapper
+                        
+        #randomly chooses a type of employee
+        type_of_employee = random.choice(types_of_employees)
+        
+        for i in range(1, 19):
+            if i % 3 == 0 or i == 1:
+                if type_of_employee == "good":
+                    type_range = random.randint(3,4)
+                elif type_of_employee =="average":
+                    type_range = random.randint(2,3)
+                else:
+                    type_range = random.randint(1,2)       
+            results = score(type_of_employee, type_range)
+            grades.append(results())
+        
+        print("El empleado es ", type_of_employee)
+        print(grades)
+        
+
+if __name__ == '__main__':
+
+    test1 = Evaluation()
+    test1.fill_evaluations()
 
 
 
