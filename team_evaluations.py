@@ -7,7 +7,8 @@ def menu():
     menu =int(input("""¿What do you want to do?:
     1. Simulate a new company \n
     2. Setup the team evaluations\n
-    3. Exit program\n"""))
+    3. Fill autoevaluations\n
+    4. Exit program\n"""))
 
     return menu
     
@@ -28,7 +29,7 @@ if __name__ == '__main__':
 
 # Read menu
     option = 0
-    while option != 3:
+    while option != 4:
         option = menu()
 
     # if menu == 1 set matrix
@@ -43,4 +44,9 @@ if __name__ == '__main__':
         elif option == 2:
             ev1 = Evaluation()
             ev1.check_matrix()  
+        
+        elif option == 3:
+            test1 = Evaluation()
+            test1.autoevaluations(test1.read_evaluator_files())
+
 

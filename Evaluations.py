@@ -286,8 +286,26 @@ class Evaluation:
             
     #leer
 
-    def write_evaluator_files(self, files_names):
-        pass
+    def autoevaluations(self, files_names):
+        #files names is the list with the name of the files: return of read_evaluator files
+        
+        for i in files_names:
+            path = './archivos/Evaluaciones/{}'.format(i)
+            #read as df
+            df_aux = pd.read_csv(path)
+            
+            for i in range(len(df_aux.columns)-1):
+                score = self.person_evaluation()
+                for j,k in enumerate(score):
+                    df_aux.iloc[j,i+1] = k
+            df_aux.rename(columns={'Unnamed: 0': 'Preguntas'}, inplace=True)
+            df_aux.to_csv(path, index = False, encoding='utf-8-sig')    
+
+
+
+
+
+
         #reads the files and check the number of
 
     #    with open('./archivos/Evaluaciones/{}'.format(files_name[0]) , 'r', encoding='utf-8-sig') as file_obj:
@@ -300,7 +318,8 @@ class Evaluation:
 
 #if __name__ == '__main__':
 #
-#    test1 = Evaluation()
+    #test1 = Evaluation()
+    #test1.autoevaluations(test1.read_evaluator_files())
 #    test1.read_evaluator_files()
 #
 
