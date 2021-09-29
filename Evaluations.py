@@ -5,6 +5,9 @@ import numpy as np
 from pandas.core import indexing
 import random
 import csv
+import copy
+import os
+
 
 class Evaluation:
  
@@ -191,7 +194,10 @@ class Evaluation:
                 "¿Anima y motiva a los demás a participar y hacer propuestas?",
                 "Teniendo todo en cuenta ¿cómo valoraría el compromiso y las contribución del colaborador a los objetivos globales, como equipo y como empresa?"
             ]
-        
+
+            #print(evaluates)
+            print(self.__evaluates)
+
             for i in range(self.__num_collaborators):
                 form = pd.DataFrame(index=questions, columns=evaluates[i][1:])
                 print(form)
@@ -206,12 +212,14 @@ class Evaluation:
 
         def prepare_4_writing(list_of_people):
             #This function introduces the evaluate & evaluators in the first position of the lists and turn index into the actual names
-            first_list =list_of_people.copy()
+            first_list =copy.deepcopy(list_of_people)
             [first_list[i].insert(0, i) for i in range(self.__num_collaborators)] # inserts the evaluate or evaluator
             list4writing = [list(map(lambda x: self.__collaborators[x], first_list[i])) for i in range(self.__num_collaborators)]
             return list4writing
-           
 
+        #evaluates = copy.deepcopy(self.__evaluates)
+        #evaluators = copy.deepcopy(self.__evaluators)
+        print("antes: ", self.__evaluates)
         with open('./archivos/evaluations.csv', 'w', newline='') as ev_file:
             map_evaluations = csv.writer(ev_file)
             map_evaluations.writerow(['This file includes de evaluations to be conducted by each collaborator'])
@@ -224,9 +232,11 @@ class Evaluation:
             map_evaluations.writerow(['Collaborator','Evaluators'])
             map_evaluations.writerows(prepare_4_writing(self.__evaluators))
         
+        #evaluates.clear()
+        #evaluates = copy.deepcopy(self.__evaluates)
         build_frameworks(prepare_4_writing(self.__evaluates))
 
-    def fill_evaluations(self):
+    def person_evaluation(self):
         #This function sets a randomly list of grades for each of the question in the forms according to randomly selected scores
         #For consistency, employees respond to different types of behabiours
         types_of_employees = ["bad", "average", "good"]
@@ -266,24 +276,36 @@ class Evaluation:
         
         print("El empleado es ", type_of_employee)
         print(grades)
+        return grades
+
+    def read_evaluator_files(self):
+    #This method read all the files in the "Evaluations" dir and extacts the name of the files, and the number of evaluations
+        return [x for x in os.listdir('./archivos/Evaluaciones') if x.endswith(".csv")]
+        #print(files_name)
         
+            
+    #leer
 
-if __name__ == '__main__':
+    def write_evaluator_files(self, files_names):
+        pass
+        #reads the files and check the number of
 
-    test1 = Evaluation()
-    test1.fill_evaluations()
+    #    with open('./archivos/Evaluaciones/{}'.format(files_name[0]) , 'r', encoding='utf-8-sig') as file_obj:
+    #        file = csv.reader(file_obj)
+    #        header = next(file)
+    #        print(header)
+    #        if header != None:
+    #            for row in file:
+    #                print(row[0]) #imprime sólo la primera fila
 
+#if __name__ == '__main__':
+#
+#    test1 = Evaluation()
+#    test1.read_evaluator_files()
+#
 
 
         #There are 18 question. Every 3 questions, the level of score changes ramdomly
         # If good employee, level of score may be 3 or for
         # # IF average, level of score 2 or 3
         # if bad, leve 1 or 2
-
-
-
-
-                
-        
-
-    
