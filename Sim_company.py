@@ -5,6 +5,7 @@ from typing import Type
 import names
 import pandas as pd
 from pandas import ExcelWriter
+from pathlib import Path
 
 #sys.setrecursionlimit(1000000)
 
@@ -234,9 +235,12 @@ class Sim_comp():
         self.comp_df.set_index(['Collaborators'], inplace=True)
         self.comp_df.insert(0, 'Areas', self.__column_dept)
         
-        person = self.comp_df.loc[self._people[4],:]
+        #person = self.comp_df.loc[self._people[4],:]
         
         self.comp_df.replace(True, 1, inplace=True)
+        
+        Path("./archivos").mkdir(parents=True, exist_ok=True)
+
         self.comp_df.to_csv('./archivos/interacciones.csv')
         
         #with ExcelWriter('./archivos/interacciones.xlsx') as writer:

@@ -7,6 +7,11 @@ import random
 import csv
 import copy
 import os
+from pathlib import Path
+from datetime import datetime, time
+from tkinter import filedialog
+from tkinter import *
+import glob
 
 
 class Evaluation:
@@ -30,6 +35,7 @@ class Evaluation:
     #This method reads the matrix & checks that the matrix is well build. Transposition of the matrix equals the original one
     #introduce el numbre del archivo
         
+
         file = 'interacciones.csv' #input("Input the name of the file: ")
         path = './archivos/{}'.format(file)
         self.__matrix = pd.read_csv(path)
@@ -166,8 +172,8 @@ class Evaluation:
                 else:
                     break
 
-        def build_frameworks(evaluates):
-            #This methof creates the files for each collaborator to conduct the evaluations
+        def build_forms(evaluates, time, vers):
+            #This method creates the files for each collaborator to conduct the evaluations
             #The evaluations consist in X simple questions to be evaluted from 1 to 4
 
             #We will build a DataFrame for each evaluator with the questions in row, and the evaluates in row
@@ -196,14 +202,16 @@ class Evaluation:
             ]
 
             #print(evaluates)
-            print(self.__evaluates)
-
+            #print(self.__evaluates)
+            #mydatetime = datetime.now()
+            path = './archivos/{}_Evaluacion'.format(time.strftime('%Y%m%d')[2:]) + '_v' + str(vers)
+            Path(path).mkdir(parents=True, exist_ok=True)
             for i in range(self.__num_collaborators):
                 form = pd.DataFrame(index=questions, columns=evaluates[i][1:])
                 print(form)
                 evaluator = evaluates[i][0]
-                path = './archivos/Evaluaciones/{}_form.csv'.format(evaluator)    
-                form.to_csv(path, header=True, index=True, encoding='utf-8-sig')            
+                path1 = path + '/{}_form.csv'.format(evaluator)    
+                form.to_csv(path1, header=True, index=True, encoding='utf-8-sig')            
 
 
         for i in range(self.__num_collaborators):
@@ -217,24 +225,37 @@ class Evaluation:
             list4writing = [list(map(lambda x: self.__collaborators[x], first_list[i])) for i in range(self.__num_collaborators)]
             return list4writing
 
-        #evaluates = copy.deepcopy(self.__evaluates)
-        #evaluators = copy.deepcopy(self.__evaluators)
-        print("antes: ", self.__evaluates)
-        with open('./archivos/evaluations.csv', 'w', newline='') as ev_file:
+
+        mydatetime = datetime.now()
+        path = "./archivos"
+        Path(path).mkdir(parents=True, exist_ok=True)
+
+        #if the file already exists, add subsequent versions
+        evaluation_files = os.listdir(path)
+        version = 0
+        evaluations_day_name = '{}_evaluations'.format(mydatetime.strftime('%Y%m%d')[2:]) + '_v' + str(version)
+        evaluators_day_name = '{}_evaluators'.format(mydatetime.strftime('%Y%m%d')[2:]) + '_v' + str(version)
+    
+        while evaluations_day_name + '.csv' in evaluation_files:
+            version +=1 
+            evaluations_day_name = evaluations_day_name[:-1] + str(version)
+            evaluators_day_name = evaluators_day_name[:-1] + str(version)
+            
+        
+        with open(path + '/' + evaluations_day_name + '.csv', 'w', newline='') as ev_file:
             map_evaluations = csv.writer(ev_file)
             map_evaluations.writerow(['This file includes de evaluations to be conducted by each collaborator'])
             map_evaluations.writerow(['Evaluator','Evaluates'])
             map_evaluations.writerows(prepare_4_writing(self.__evaluates))
         
-        with open('./archivos/evaluators.csv', 'w', newline='') as evt_file:
+
+        with open(path + '/' + evaluators_day_name + '.csv', 'w', newline='') as evt_file:
             map_evaluations = csv.writer(evt_file)
             map_evaluations.writerow(['This file includes de evaluators of each collaborator'])
             map_evaluations.writerow(['Collaborator','Evaluators'])
             map_evaluations.writerows(prepare_4_writing(self.__evaluators))
-        
-        #evaluates.clear()
-        #evaluates = copy.deepcopy(self.__evaluates)
-        build_frameworks(prepare_4_writing(self.__evaluates))
+
+        build_forms(prepare_4_writing(self.__evaluates), mydatetime, version)
 
     def person_evaluation(self):
         #This function sets a randomly list of grades for each of the question in the forms according to randomly selected scores
@@ -242,14 +263,12 @@ class Evaluation:
         types_of_employees = ["bad", "average", "good"]
         self.cont = 0
         grades = []
-        print("hola")
-
+        print("hola")   
         #ranges of score
-        
-        def score(empl_type, type):     
 
+        def score(empl_type, type):         
             def wrapper():        
-                
+
                 if type == 4:
                     return 4
                 elif type == 3:
@@ -259,10 +278,10 @@ class Evaluation:
                 elif type == 1:
                     return 1
             return wrapper
-                        
+
         #randomly chooses a type of employee
         type_of_employee = random.choice(types_of_employees)
-        
+
         for i in range(1, 19):
             if i % 3 == 0 or i == 1:
                 if type_of_employee == "good":
@@ -273,34 +292,55 @@ class Evaluation:
                     type_range = random.randint(1,2)       
             results = score(type_of_employee, type_range)
             grades.append(results())
-        
+
         print("El empleado es ", type_of_employee)
         print(grades)
-        return grades
-
+        return grades   
+    
+    
     def read_evaluator_files(self):
     #This method read all the files in the "Evaluations" dir and extacts the name of the files, and the number of evaluations
-        return [x for x in os.listdir('./archivos/Evaluaciones') if x.endswith(".csv")]
-        #print(files_name)
         
+        def browse_button():
+            #Allow user to select a directory and store in global var
+            #global folder_path
+            filename = filedialog.askdirectory()
+            folder_path.set(filename)
+            print(filename)
             
-    #leer
 
+
+        root = Tk()
+        folder_path = StringVar()
+        root.title("Selecciona un directorio")
+        root.geometry("400x300")
+        path_lbl = Label(master=root, textvariable= folder_path)
+        path_lbl.grid(row=0, column=1)
+        button_browser = Button(text="Explorar", command=browse_button)
+        button_browser.grid(row = 0, column= 3)
+        root.mainloop()
+        
+        #return [x for x in os.listdir(folder_path) if x.endswith(".csv")]
+        print(folder_path)
+        return [x for x in glob.glob(folder_path) if x.endswith(".csv")]
+        #print(files_name)
+
+
+    #leer   
     def autoevaluations(self, files_names):
         #files names is the list with the name of the files: return of read_evaluator files
-        
+
         for i in files_names:
             path = './archivos/Evaluaciones/{}'.format(i)
             #read as df
             df_aux = pd.read_csv(path)
-            
+
             for i in range(len(df_aux.columns)-1):
                 score = self.person_evaluation()
                 for j,k in enumerate(score):
                     df_aux.iloc[j,i+1] = k
             df_aux.rename(columns={'Unnamed: 0': 'Preguntas'}, inplace=True)
-            df_aux.to_csv(path, index = False, encoding='utf-8-sig')    
-
+            df_aux.to_csv(path, index = False, encoding='utf-8-sig')        
 
 
 
