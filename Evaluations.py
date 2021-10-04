@@ -211,7 +211,13 @@ class Evaluation:
                 print(form)
                 evaluator = evaluates[i][0]
                 path1 = path + '/{}_form.csv'.format(evaluator)    
-                form.to_csv(path1, header=True, index=True, encoding='utf-8-sig')            
+
+                with open(path1, 'w', newline='', encoding='utf-8-sig') as ev_file:
+                    file = csv.writer(ev_file)
+                    file.writerow(["Evaluador:", evaluator])
+                    file.writerow(["Date:", time.strftime('%d/%m/%Y')])
+                    file.writerow([])
+                form.to_csv(path1, header=True, index=True, mode='a', encoding='utf-8-sig')            
 
 
             #with open(path + '/' + evaluators_day_name + '.csv', 'w', newline='') as evt_file:
@@ -250,14 +256,14 @@ class Evaluation:
             evaluators_day_name = evaluators_day_name[:-1] + str(version)
             
         
-        with open(path + '/' + evaluations_day_name + '.csv', 'w', newline='') as ev_file:
+        with open(path + '/' + evaluations_day_name + '.csv', 'w', newline='', encoding='utf-8-sig') as ev_file:
             map_evaluations = csv.writer(ev_file)
             map_evaluations.writerow(['This file includes de evaluations to be conducted by each collaborator'])
             map_evaluations.writerow(['Evaluator','Evaluates'])
             map_evaluations.writerows(prepare_4_writing(self.__evaluates))
         
 
-        with open(path + '/' + evaluators_day_name + '.csv', 'w', newline='') as evt_file:
+        with open(path + '/' + evaluators_day_name + '.csv', 'w', newline='', encoding='utf-8-sig') as evt_file:
             map_evaluations = csv.writer(evt_file)
             map_evaluations.writerow(['This file includes de evaluators of each collaborator'])
             map_evaluations.writerow(['Collaborator','Evaluators'])
@@ -310,17 +316,31 @@ class Evaluation:
 
         filename =filedialog.askdirectory(title="Selecciona un directorio", initialdir='./archivos')
         files_names = [x for x in glob.glob(filename + '/*.csv') if x.endswith(".csv")]
-        print(files_names)
+        #print(files_names)
 
         for file in files_names:
 
-            df_aux = pd.read_csv(file)
-
+            df_aux = pd.read_csv(file, skiprows=3, encoding='utf-8-sig')
+            #print(df_aux)
             for i in range(len(df_aux.columns)-1):
                 score = self.person_evaluation()
                 for j,k in enumerate(score):
                     df_aux.iloc[j,i+1] = k
             df_aux.rename(columns={'Unnamed: 0': 'Preguntas'}, inplace=True)
-            df_aux.to_csv(file, index = False, encoding='utf-8-sig')        
+            
+            headrows=[]
+            with open(file,'r',newline='', encoding='utf-8-sig') as editfile:
+                readfile = csv.reader(editfile)                                        
+                row1 = next(readfile)
+                row2 = next(readfile)
+                row3 = next(readfile)
+            
+            with open(file,'w',newline='', encoding='utf-8-sig') as editfile:
+                writefile = csv.writer(editfile)
+                writefile.writerow(row1)
+                writefile.writerow(row2)
+                writefile.writerow(row3)
+            
+            df_aux.to_csv(file, index = False, mode='a', encoding='utf-8-sig')        
 
 
