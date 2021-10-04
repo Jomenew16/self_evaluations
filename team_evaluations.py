@@ -47,6 +47,6 @@ if __name__ == '__main__':
         
         elif option == 3:
             test1 = Evaluation()
-            test1.autoevaluations(test1.read_evaluator_files())
+            test1.autoevaluations()
 
 

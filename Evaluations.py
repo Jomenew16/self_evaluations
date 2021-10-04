@@ -35,10 +35,10 @@ class Evaluation:
     #This method reads the matrix & checks that the matrix is well build. Transposition of the matrix equals the original one
     #introduce el numbre del archivo
         
-
-        file = 'interacciones.csv' #input("Input the name of the file: ")
-        path = './archivos/{}'.format(file)
-        self.__matrix = pd.read_csv(path)
+        file_path =filedialog.askopenfilename(title="Seleccione el archivo de interacciones", initialdir='.')
+        #file = 'interacciones.csv' #input("Input the name of the file: ")
+        #path = './archivos/{}'.format(file)
+        self.__matrix = pd.read_csv(file_path)
         
 
     #Drop the column of Areas
@@ -214,6 +214,14 @@ class Evaluation:
                 form.to_csv(path1, header=True, index=True, encoding='utf-8-sig')            
 
 
+            #with open(path + '/' + evaluators_day_name + '.csv', 'w', newline='') as evt_file:
+                ##map_evaluations = csv.writer(evt_file)
+                ##map_evaluations.writerow(['This file includes de evaluators of each collaborator'])
+                ##map_evaluations.writerow(['Collaborator','Evaluators'])
+                #map_evaluations.writerows(prepare_4_writing(self.__evaluators))
+
+
+
         for i in range(self.__num_collaborators):
             random_evaluators(self.__list_interactions[i], i,self.__mx_evaluators, self.__mx_evaluations) #no need to pass general parameters
         
@@ -298,73 +306,21 @@ class Evaluation:
         return grades   
     
     
-    def read_evaluator_files(self):
-    #This method read all the files in the "Evaluations" dir and extacts the name of the files, and the number of evaluations
-        
-        def browse_button():
-            #Allow user to select a directory and store in global var
-            #global folder_path
-            filename = filedialog.askdirectory()
-            folder_path.set(filename)
-            print(filename)
-            
+    def autoevaluations(self):
 
+        filename =filedialog.askdirectory(title="Selecciona un directorio", initialdir='./archivos')
+        files_names = [x for x in glob.glob(filename + '/*.csv') if x.endswith(".csv")]
+        print(files_names)
 
-        root = Tk()
-        folder_path = StringVar()
-        root.title("Selecciona un directorio")
-        root.geometry("400x300")
-        path_lbl = Label(master=root, textvariable= folder_path)
-        path_lbl.grid(row=0, column=1)
-        button_browser = Button(text="Explorar", command=browse_button)
-        button_browser.grid(row = 0, column= 3)
-        root.mainloop()
-        
-        #return [x for x in os.listdir(folder_path) if x.endswith(".csv")]
-        print(folder_path)
-        return [x for x in glob.glob(folder_path) if x.endswith(".csv")]
-        #print(files_name)
+        for file in files_names:
 
-
-    #leer   
-    def autoevaluations(self, files_names):
-        #files names is the list with the name of the files: return of read_evaluator files
-
-        for i in files_names:
-            path = './archivos/Evaluaciones/{}'.format(i)
-            #read as df
-            df_aux = pd.read_csv(path)
+            df_aux = pd.read_csv(file)
 
             for i in range(len(df_aux.columns)-1):
                 score = self.person_evaluation()
                 for j,k in enumerate(score):
                     df_aux.iloc[j,i+1] = k
             df_aux.rename(columns={'Unnamed: 0': 'Preguntas'}, inplace=True)
-            df_aux.to_csv(path, index = False, encoding='utf-8-sig')        
+            df_aux.to_csv(file, index = False, encoding='utf-8-sig')        
 
 
-
-
-
-        #reads the files and check the number of
-
-    #    with open('./archivos/Evaluaciones/{}'.format(files_name[0]) , 'r', encoding='utf-8-sig') as file_obj:
-    #        file = csv.reader(file_obj)
-    #        header = next(file)
-    #        print(header)
-    #        if header != None:
-    #            for row in file:
-    #                print(row[0]) #imprime sólo la primera fila
-
-#if __name__ == '__main__':
-#
-    #test1 = Evaluation()
-    #test1.autoevaluations(test1.read_evaluator_files())
-#    test1.read_evaluator_files()
-#
-
-
-        #There are 18 question. Every 3 questions, the level of score changes ramdomly
-        # If good employee, level of score may be 3 or for
-        # # IF average, level of score 2 or 3
-        # if bad, leve 1 or 2
