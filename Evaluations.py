@@ -289,13 +289,13 @@ class Evaluation:
             def wrapper():        
 
                 if type == 4:
-                    return 4
+                    return random.randint(4,5)
                 elif type == 3:
                     return random.randint(3,4)
                 elif type == 2:
-                    return random.randint(1,2)
+                    return random.randint(2,3)
                 elif type == 1:
-                    return 1
+                    return random.randint(1,2)
             return wrapper
 
         #randomly chooses a type of employee
