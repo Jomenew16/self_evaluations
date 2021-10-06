@@ -30,12 +30,13 @@ class Evaluation:
         self.__num_collaborators: int
         self.__list_interactions = []
         
+#-----------------------read the interactions matrix---------------------------------------
 
     def check_matrix(self):
     #This method reads the matrix & checks that the matrix is well build. Transposition of the matrix equals the original one
     #introduce el numbre del archivo
         
-        file_path =filedialog.askopenfilename(title="Seleccione el archivo de interacciones", initialdir='.')
+        file_path =filedialog.askopenfilename(title="Seleccione el archivo de interacciones", initialdir='./archivos')
         #file = 'interacciones.csv' #input("Input the name of the file: ")
         #path = './archivos/{}'.format(file)
         self.__matrix = pd.read_csv(file_path)
@@ -52,8 +53,6 @@ class Evaluation:
             self.read_interactions()
         else:
             print("The matrix is not symetrical. Check the interactions")
-#
-
 
 
     def read_interactions(self):
@@ -66,7 +65,7 @@ class Evaluation:
 
         ind = np.arange(0, len(self.__collaborators))
         aux_matrix = ind
-        #print(ind)
+
         
         for i in range(self.__num_collaborators):
             aux_matrix = concat(aux_matrix, ind)
@@ -84,7 +83,9 @@ class Evaluation:
     
     #With this list, we will build the evaluators & evaluates...
         self.set_evaluators()
-    
+
+#------------------------------- random selection of the evaluators --------------------------
+
     def set_evaluators(self):
     # Every collaborator will be evaluated by a number of evaluators. 
     # The number of evaluator will be the same for each collaborator, unless, he/she interacts with less people
@@ -93,17 +94,17 @@ class Evaluation:
         #In principle, we will use 10 as the default for the maximum number of evaluations self.__mx_evaluations = 10 
         #Choose de number of evaluators per persons
         while self.__mx_evaluators <3:
-            self.__mx_evaluators = input("How many evaluations are required per collaborator?: \n")
+            self.__mx_evaluators = input("¿Cuantas evaluaciones se requieren por cada colaborador?: \n")
             try:    
                 self.__mx_evaluators = int(self.__mx_evaluators)
             except:
-                print("The input has to be an integer")
+                print("Debes escoger un número entero")
             finally:
                 if isinstance(self.__mx_evaluators, int):
                     if self.__mx_evaluators >= 3:
                         pass
                     else:
-                        print("\nChoose at least 3 evaluator per collaborator\n")
+                        print("\nEscoge al menos 3 evaluadores por colaborador\n")
                 else:
                     self.__mx_evaluators = 0 
 
@@ -133,8 +134,7 @@ class Evaluation:
                     return random.choice(final_min)
                 else:
                     return list_top_evaluators[0]
-                #else:
-                #    print("no quedan evaluadores ¿se acaba?")
+
 
             
             #First evaluator when the dim is 0
@@ -172,6 +172,9 @@ class Evaluation:
                 else:
                     break
 
+
+#-------------------------------- build the evaluation forms --------------------------
+        
         def build_forms(evaluates, time, vers):
             #This method creates the files for each collaborator to conduct the evaluations
             #The evaluations consist in X simple questions to be evaluted from 1 to 4
@@ -201,14 +204,10 @@ class Evaluation:
                 "Teniendo todo en cuenta ¿cómo valoraría el compromiso y las contribución del colaborador a los objetivos globales, como equipo y como empresa?"
             ]
 
-            #print(evaluates)
-            #print(self.__evaluates)
-            #mydatetime = datetime.now()
             path = './archivos/{}_Evaluacion'.format(time.strftime('%Y%m%d')[2:]) + '_v' + str(vers)
             Path(path).mkdir(parents=True, exist_ok=True)
             for i in range(self.__num_collaborators):
                 form = pd.DataFrame(index=questions, columns=evaluates[i][1:])
-                print(form)
                 evaluator = evaluates[i][0]
                 path1 = path + '/{}_form.csv'.format(evaluator)    
 
@@ -216,6 +215,12 @@ class Evaluation:
                     file = csv.writer(ev_file)
                     file.writerow(["Evaluador:", evaluator])
                     file.writerow(["Date:", time.strftime('%d/%m/%Y')])
+                    file.writerow([])
+                    file.writerow(['INSTRUCCIONES'])
+                    file.writerow(['Cumplimenta con valores del 1 al 5, donde 1 representa "Totalmente en desacuerdo" y 5 "Totalmente de acuerdo"'])
+                    file.writerow(['Si te faltan elementos de juicio para evaluar algún aspecto o a algún colaborador, deja la/s casilla/s en blanco'])
+                    file.writerow([])
+                    file.writerow(['EVALUACIÓN'])
                     file.writerow([])
                 form.to_csv(path1, header=True, index=True, mode='a', encoding='utf-8-sig')            
 
@@ -277,7 +282,7 @@ class Evaluation:
         types_of_employees = ["bad", "average", "good"]
         self.cont = 0
         grades = []
-        print("hola")   
+
         #ranges of score
 
         def score(empl_type, type):         
@@ -307,40 +312,46 @@ class Evaluation:
             results = score(type_of_employee, type_range)
             grades.append(results())
 
-        print("El empleado es ", type_of_employee)
-        print(grades)
         return grades   
     
     
     def autoevaluations(self):
 
-        filename =filedialog.askdirectory(title="Selecciona un directorio", initialdir='./archivos')
+        filename =filedialog.askdirectory(title="Selecciona el directorio con los formularios de evaluación sin cumplimentar", initialdir='./archivos')
         files_names = [x for x in glob.glob(filename + '/*.csv') if x.endswith(".csv")]
-        #print(files_names)
+        
 
         for file in files_names:
 
-            df_aux = pd.read_csv(file, skiprows=3, encoding='utf-8-sig')
-            #print(df_aux)
+            df_aux = pd.read_csv(file, skiprows=9, encoding='utf-8-sig')
+           
             for i in range(len(df_aux.columns)-1):
                 score = self.person_evaluation()
                 for j,k in enumerate(score):
                     df_aux.iloc[j,i+1] = k
             df_aux.rename(columns={'Unnamed: 0': 'Preguntas'}, inplace=True)
             
-            headrows=[]
+            row=[]
             with open(file,'r',newline='', encoding='utf-8-sig') as editfile:
                 readfile = csv.reader(editfile)                                        
-                row1 = next(readfile)
-                row2 = next(readfile)
-                row3 = next(readfile)
+                for i in range(1,9):
+                    row.append(next(readfile))
+                    
             
             with open(file,'w',newline='', encoding='utf-8-sig') as editfile:
                 writefile = csv.writer(editfile)
-                writefile.writerow(row1)
-                writefile.writerow(row2)
-                writefile.writerow(row3)
+                for i in range(8):
+                    writefile.writerow(row[i])
             
-            df_aux.to_csv(file, index = False, mode='a', encoding='utf-8-sig')        
+            df_aux.to_csv(file, index = False, mode='a', encoding='utf-8-sig') 
+
+# ----------------------------------------- Assessment ----------------------------
+# 
+    def assessment():
+        
+        filename =filedialog.askdirectory(title="Selecciona el directorio de la evaluación actual", initialdir='./archivos')
+        files_names = [x for x in glob.glob(filename + '/*.csv') if x.endswith(".csv")]   
+        
+                    
 
 

@@ -38,8 +38,6 @@ if __name__ == '__main__':
             Company = Sim_comp()
             Company.set_company()
 
-            #Company.set_areas()
-            #Company.build_interactions()
 
         elif option == 2:
             ev1 = Evaluation()

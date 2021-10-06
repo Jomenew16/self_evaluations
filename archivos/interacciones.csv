@@ -1,16 +1,21 @@
-Collaborators,Areas,Franklin Ackerman,Amalia Stiefel,Patsy James,Lakisha Baxter,Carmen Christopher,James Cochrane,James Osbourne,Grace Belden,Bryan Dejesus,Priscilla Zahner,Santos Thompson,Ben Pineda,Mary Owen,Rickey Hart,Millie Mcclain
-Franklin Ackerman,Production,,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,,,,1.0,1.0,1.0
-Amalia Stiefel,Production,1.0,,1.0,1.0,1.0,1.0,1.0,,,,,,1.0,,
-Patsy James,Production,1.0,1.0,,1.0,1.0,1.0,1.0,,,,,,1.0,,
-Lakisha Baxter,Production,1.0,1.0,1.0,,1.0,1.0,1.0,,,,,,1.0,,
-Carmen Christopher,Production,1.0,1.0,1.0,1.0,,1.0,1.0,,,,,,1.0,,
-James Cochrane,Production,1.0,1.0,1.0,1.0,1.0,,1.0,,,,,,1.0,,
-James Osbourne,Production,1.0,1.0,1.0,1.0,1.0,1.0,,,,,,,1.0,,
-Grace Belden,General management,1.0,,,,,,,,1.0,,,,1.0,1.0,1.0
-Bryan Dejesus,Administration,1.0,,,,,,,1.0,,1.0,1.0,1.0,1.0,1.0,1.0
-Priscilla Zahner,Administration,,,,,,,,,1.0,,1.0,1.0,1.0,,
-Santos Thompson,Administration,,,,,,,,,1.0,1.0,,1.0,1.0,,
-Ben Pineda,Administration,,,,,,,,,1.0,1.0,1.0,,1.0,,
-Mary Owen,Talent,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,,1.0,1.0
-Rickey Hart,Sales,1.0,,,,,,,1.0,1.0,,,,1.0,,1.0
-Millie Mcclain,Accounts,1.0,,,,,,,1.0,1.0,,,,1.0,1.0,
+Collaborators,Areas,Phillip Webster,Lamar Jackson,Michelle Osborne,Christy Veltman,Bruce Woolfolk,Cassaundra Parker,Mary Eagle,Leslie Coone,Barbara Edwards,Willa Fowler,Jose Modrak,Kimberly Garren,Catherine Holmquist,Betty Davis,Elijah Pape,Stephanie Brasfield,Esther Sine,Moses Flamand,Mollie Taylor,Johnathan Vargas
+Phillip Webster,Production,,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,,,,,1.0,1.0,1.0,1.0,1.0
+Lamar Jackson,Production,1.0,,1.0,1.0,1.0,1.0,1.0,1.0,1.0,,,,,,,1.0,,,,
+Michelle Osborne,Production,1.0,1.0,,1.0,1.0,1.0,1.0,1.0,1.0,,,,,,,1.0,,,,
+Christy Veltman,Production,1.0,1.0,1.0,,1.0,1.0,1.0,1.0,1.0,,,,,,,1.0,,,,
+Bruce Woolfolk,Production,1.0,1.0,1.0,1.0,,1.0,1.0,1.0,1.0,,,,,,,1.0,,,,
+Cassaundra Parker,Production,1.0,1.0,1.0,1.0,1.0,,1.0,1.0,1.0,,,,,,,1.0,,,,
+Mary Eagle,Production,1.0,1.0,1.0,1.0,1.0,1.0,,1.0,1.0,,,,,,,1.0,,,,
+Leslie Coone,Production,1.0,1.0,1.0,1.0,1.0,1.0,1.0,,1.0,,,,,,,1.0,,,,
+Barbara Edwards,Production,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,,,,,,,,1.0,,,,
+Willa Fowler,General management,1.0,,,,,,,,,,1.0,,,,,1.0,1.0,1.0,1.0,1.0
+Jose Modrak,Administration,1.0,,,,,,,,,1.0,,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0
+Kimberly Garren,Administration,,,,,,,,,,,1.0,,1.0,1.0,1.0,1.0,,,,
+Catherine Holmquist,Administration,,,,,,,,,,,1.0,1.0,,1.0,1.0,1.0,,,,
+Betty Davis,Administration,,,,,,,,,,,1.0,1.0,1.0,,1.0,1.0,,,,
+Elijah Pape,Administration,,,,,,,,,,,1.0,1.0,1.0,1.0,,1.0,,,,
+Stephanie Brasfield,Talent,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,,1.0,1.0,1.0,1.0
+Esther Sine,Sales,1.0,,,,,,,,,1.0,1.0,,,,,1.0,,1.0,1.0,1.0
+Moses Flamand,Accounts,1.0,,,,,,,,,1.0,1.0,,,,,1.0,1.0,,1.0,1.0
+Mollie Taylor,Purchasing,1.0,,,,,,,,,1.0,1.0,,,,,1.0,1.0,1.0,,1.0
+Johnathan Vargas,IT,1.0,,,,,,,,,1.0,1.0,,,,,1.0,1.0,1.0,1.0,
