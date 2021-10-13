@@ -1,21 +1,16 @@
-Collaborators,Areas,Phillip Webster,Lamar Jackson,Michelle Osborne,Christy Veltman,Bruce Woolfolk,Cassaundra Parker,Mary Eagle,Leslie Coone,Barbara Edwards,Willa Fowler,Jose Modrak,Kimberly Garren,Catherine Holmquist,Betty Davis,Elijah Pape,Stephanie Brasfield,Esther Sine,Moses Flamand,Mollie Taylor,Johnathan Vargas
-Phillip Webster,Production,,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,,,,,1.0,1.0,1.0,1.0,1.0
-Lamar Jackson,Production,1.0,,1.0,1.0,1.0,1.0,1.0,1.0,1.0,,,,,,,1.0,,,,
-Michelle Osborne,Production,1.0,1.0,,1.0,1.0,1.0,1.0,1.0,1.0,,,,,,,1.0,,,,
-Christy Veltman,Production,1.0,1.0,1.0,,1.0,1.0,1.0,1.0,1.0,,,,,,,1.0,,,,
-Bruce Woolfolk,Production,1.0,1.0,1.0,1.0,,1.0,1.0,1.0,1.0,,,,,,,1.0,,,,
-Cassaundra Parker,Production,1.0,1.0,1.0,1.0,1.0,,1.0,1.0,1.0,,,,,,,1.0,,,,
-Mary Eagle,Production,1.0,1.0,1.0,1.0,1.0,1.0,,1.0,1.0,,,,,,,1.0,,,,
-Leslie Coone,Production,1.0,1.0,1.0,1.0,1.0,1.0,1.0,,1.0,,,,,,,1.0,,,,
-Barbara Edwards,Production,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,,,,,,,,1.0,,,,
-Willa Fowler,General management,1.0,,,,,,,,,,1.0,,,,,1.0,1.0,1.0,1.0,1.0
-Jose Modrak,Administration,1.0,,,,,,,,,1.0,,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0
-Kimberly Garren,Administration,,,,,,,,,,,1.0,,1.0,1.0,1.0,1.0,,,,
-Catherine Holmquist,Administration,,,,,,,,,,,1.0,1.0,,1.0,1.0,1.0,,,,
-Betty Davis,Administration,,,,,,,,,,,1.0,1.0,1.0,,1.0,1.0,,,,
-Elijah Pape,Administration,,,,,,,,,,,1.0,1.0,1.0,1.0,,1.0,,,,
-Stephanie Brasfield,Talent,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,,1.0,1.0,1.0,1.0
-Esther Sine,Sales,1.0,,,,,,,,,1.0,1.0,,,,,1.0,,1.0,1.0,1.0
-Moses Flamand,Accounts,1.0,,,,,,,,,1.0,1.0,,,,,1.0,1.0,,1.0,1.0
-Mollie Taylor,Purchasing,1.0,,,,,,,,,1.0,1.0,,,,,1.0,1.0,1.0,,1.0
-Johnathan Vargas,IT,1.0,,,,,,,,,1.0,1.0,,,,,1.0,1.0,1.0,1.0,
+Collaborators,Areas,Dale Thill,Robin Harris,Frank Juarez,Arnold Deaton,James Speed,Ricardo Huhman,Stan Curry,Donald Busby,Joshua Isham,Ruben Tamayo,Stephanie Weston,Kayla Bergeron,Catherine Rivers,Katrina Schultz,Charles Harrison
+Dale Thill,Production,,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,,,,1.0,1.0,1.0
+Robin Harris,Production,1.0,,1.0,1.0,1.0,1.0,1.0,,,,,,1.0,,
+Frank Juarez,Production,1.0,1.0,,1.0,1.0,1.0,1.0,,,,,,1.0,,
+Arnold Deaton,Production,1.0,1.0,1.0,,1.0,1.0,1.0,,,,,,1.0,,
+James Speed,Production,1.0,1.0,1.0,1.0,,1.0,1.0,,,,,,1.0,,
+Ricardo Huhman,Production,1.0,1.0,1.0,1.0,1.0,,1.0,,,,,,1.0,,
+Stan Curry,Production,1.0,1.0,1.0,1.0,1.0,1.0,,,,,,,1.0,,
+Donald Busby,General management,1.0,,,,,,,,1.0,,,,1.0,1.0,1.0
+Joshua Isham,Administration,1.0,,,,,,,1.0,,1.0,1.0,1.0,1.0,1.0,1.0
+Ruben Tamayo,Administration,,,,,,,,,1.0,,1.0,1.0,1.0,,
+Stephanie Weston,Administration,,,,,,,,,1.0,1.0,,1.0,1.0,,
+Kayla Bergeron,Administration,,,,,,,,,1.0,1.0,1.0,,1.0,,
+Catherine Rivers,Talent,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,,1.0,1.0
+Katrina Schultz,Sales,1.0,,,,,,,1.0,1.0,,,,1.0,,1.0
+Charles Harrison,Accounts,1.0,,,,,,,1.0,1.0,,,,1.0,1.0,

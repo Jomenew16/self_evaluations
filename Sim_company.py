@@ -6,6 +6,8 @@ import names
 import pandas as pd
 from pandas import ExcelWriter
 from pathlib import Path
+from tkinter import *
+from tkinter import messagebox
 
 #sys.setrecursionlimit(1000000)
 
@@ -36,20 +38,50 @@ class Sim_comp():
     def set_company(self):
         
         while self.num_collaborators <7:
-            self.num_collaborators = input("How many collaborators are there?: ")
+            
+            root_colabs = Tk()
+
+            num_colabs = IntVar()
+            num_colabs.set(20)
+
+            def readEntry():
+                self.num_collaborators = num_colabs.get()
+                root_colabs.quit
+                print(self.num_collaborators)
+
+            def cancel():
+                root_colabs.destroy()
+
+            sizeLabel = Label(root_colabs, text= "Tamaño de la empresa (número de colaboradores)", font = ("Open Sans", 10))
+            sizeLabel.pack(side = "top")
+
+            sizeText = Entry(root_colabs, textvariable= num_colabs)
+            sizeText.pack(side="top")
+
+            sizeButton = Button(root_colabs, text="Iniciar", command = readEntry)
+            sizeButton.pack(pady=10)
+
+            cancelButton = Button(root_colabs, text="Cancela", command = cancel)
+            cancelButton.pack( pady=10)
+            
+            #self.num_collaborators = input("How many collaborators are there?: ")
+            root_colabs.mainloop()
+            
             try:    
                 self.num_collaborators = int(self.num_collaborators)
             except:
-                print("The input has to be an integer")
+                messagebox.showwarning('Aviso', 'Introduce un número entero') 
+                #print("The input has to be an integer")
             finally:
                 if isinstance(self.num_collaborators, int):
                     if self.num_collaborators >= 7:
                         pass
                     else:
-                        print("\n The company must have at least 7 collaborators \n")
+                        messagebox.showwarning('Aviso', 'La emrpesa debe tener al menos 7 colaboradores') 
                 else:
                     self.num_collaborators = 0 
 
+            
 
         self._people = [names.get_full_name() for i in range(self.num_collaborators)]    
         
@@ -245,4 +277,7 @@ class Sim_comp():
         
         #with ExcelWriter('./archivos/interacciones.xlsx') as writer:
         #    self.comp_df.to_excel(writer)
-    
+
+if __name__ == '__main__':
+    company = Sim_comp()
+    company.set_company()
