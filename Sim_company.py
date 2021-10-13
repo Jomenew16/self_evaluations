@@ -44,13 +44,33 @@ class Sim_comp():
             num_colabs = IntVar()
             num_colabs.set(20)
 
-            def readEntry():
-                self.num_collaborators = num_colabs.get()
-                root_colabs.quit
+            def readEntry(event=None):
+                
+                try:    
+                    self.num_collaborators = num_colabs.get()
+                #     self.num_collaborators = int(self.num_collaborators)
+                except:
+                    messagebox.showwarning('Aviso', 'Introduce un número entero')
+                    #root_colabs.destroy() 
+                    #print("The input has to be an integer")
+                finally:
+                    if isinstance(self.num_collaborators, int):
+                        if self.num_collaborators >= 7:
+                            pass
+                        else:
+                            messagebox.showwarning('Aviso', 'La empresa debe tener al menos 7 colaboradores')            
+                    else:
+                        self.num_collaborators = 0 
+
+                root_colabs.destroy()
+
+
+
                 print(self.num_collaborators)
 
             def cancel():
                 root_colabs.destroy()
+                exit()
 
             sizeLabel = Label(root_colabs, text= "Tamaño de la empresa (número de colaboradores)", font = ("Open Sans", 10))
             sizeLabel.pack(side = "top")
@@ -59,27 +79,16 @@ class Sim_comp():
             sizeText.pack(side="top")
 
             sizeButton = Button(root_colabs, text="Iniciar", command = readEntry)
+            sizeButton.focus()
+            sizeButton.bind('<Return>', readEntry)
             sizeButton.pack(pady=10)
 
-            cancelButton = Button(root_colabs, text="Cancela", command = cancel)
+            cancelButton = Button(root_colabs, text="Cancelar", command = cancel)
             cancelButton.pack( pady=10)
             
             #self.num_collaborators = input("How many collaborators are there?: ")
             root_colabs.mainloop()
             
-            try:    
-                self.num_collaborators = int(self.num_collaborators)
-            except:
-                messagebox.showwarning('Aviso', 'Introduce un número entero') 
-                #print("The input has to be an integer")
-            finally:
-                if isinstance(self.num_collaborators, int):
-                    if self.num_collaborators >= 7:
-                        pass
-                    else:
-                        messagebox.showwarning('Aviso', 'La emrpesa debe tener al menos 7 colaboradores') 
-                else:
-                    self.num_collaborators = 0 
 
             
 
