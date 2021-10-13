@@ -12,6 +12,7 @@ from datetime import datetime, time
 from tkinter import filedialog
 from tkinter import *
 import glob
+from tkinter import messagebox
 
 
 class Evaluation:
@@ -36,7 +37,12 @@ class Evaluation:
     #This method reads the matrix & checks that the matrix is well build. Transposition of the matrix equals the original one
     #introduce el numbre del archivo
         
+        #%gui tk
+        raiz = Tk()
+        raiz.withdraw()
         file_path =filedialog.askopenfilename(title="Seleccione el archivo de interacciones", initialdir='./archivos')
+        #raiz.update()
+        raiz.destroy()
         #file = 'interacciones.csv' #input("Input the name of the file: ")
         #path = './archivos/{}'.format(file)
         self.__matrix = pd.read_csv(file_path)
@@ -50,6 +56,7 @@ class Evaluation:
         if self.__matrix.values.all() == self.__matrix.values.T.all():
             self.__collaborators = list(self.__matrix.columns)
             self.__num_collaborators = len(self.__collaborators)
+            #print("se ha leído el archivo")
             self.read_interactions()
         else:
             print("The matrix is not symetrical. Check the interactions")
@@ -93,20 +100,53 @@ class Evaluation:
         
         #In principle, we will use 10 as the default for the maximum number of evaluations self.__mx_evaluations = 10 
         #Choose de number of evaluators per persons
+        #print("llegamos a establecer evaluadores")
         while self.__mx_evaluators <3:
-            self.__mx_evaluators = input("¿Cuantas evaluaciones se requieren por cada colaborador?: \n")
-            try:    
-                self.__mx_evaluators = int(self.__mx_evaluators)
-            except:
-                print("Debes escoger un número entero")
-            finally:
-                if isinstance(self.__mx_evaluators, int):
-                    if self.__mx_evaluators >= 3:
-                        pass
+            
+            ev_root = Tk()
+
+            num_evaluations = IntVar()
+            num_evaluations.set(7) 
+            
+
+            def evaluations(event=None):
+                try:    
+                    self.__mx_evaluators = num_evaluations.get()
+                except:
+                    messagebox.showwarning('Aviso', 'Debes escoger un número entero')
+                    #print("Debes escoger un número entero")
+                finally:
+                    if isinstance(self.__mx_evaluators, int):
+                        if self.__mx_evaluators >= 3:
+                            pass
+                        else:
+                            messagebox.showwarning('Aviso', 'Escoge al menos 3 evaluadores por colaborador')            
+                            #print("\nEscoge al menos 3 evaluadores por colaborador\n")
                     else:
-                        print("\nEscoge al menos 3 evaluadores por colaborador\n")
-                else:
-                    self.__mx_evaluators = 0 
+                        self.__mx_evaluators = 0 
+                ev_root.destroy()
+                print(self.__mx_evaluators)
+            
+            def cancelp():
+                ev_root.destroy()
+                exit()
+
+            txLabel = Label(ev_root, text="Cuántas evaluaciones se requieren por cada colaborador")
+            txLabel.pack(side="top")
+
+            numEntry = Entry(ev_root, textvariable=num_evaluations)
+            numEntry.pack(side='top')
+
+            evButton = Button(ev_root, text="iniciar", command = evaluations)
+            #evButton.focus()
+            #evButton.bind('<Return>', evaluations)
+            evButton.pack(side='top')
+
+            cancelButton = Button(ev_root, text="Cancelar", command = cancelp)
+            cancelButton.pack( pady=10)
+
+            ev_root.mainloop()
+            #self.__mx_evaluators = input("¿Cuantas evaluaciones se requieren por cada colaborador?: \n")
 
         #inicializar las listas self.__evaluates[] y self.__evaluators[], con su número de elementos
         self.__evaluates = [[] for i in range(0,self.__num_collaborators)] 
@@ -347,11 +387,13 @@ class Evaluation:
 
 # ----------------------------------------- Assessment ----------------------------
 # 
-    def assessment():
+    #def assessment():
+    #    
+    #    filename =filedialog.askdirectory(title="Selecciona el directorio de la evaluación actual", initialdir='./archivos')
+    #    files_names = [x for x in glob.glob(filename + '/*.csv') if x.endswith(".csv")]   
         
-        filename =filedialog.askdirectory(title="Selecciona el directorio de la evaluación actual", initialdir='./archivos')
-        files_names = [x for x in glob.glob(filename + '/*.csv') if x.endswith(".csv")]   
-        
-                    
-
+                
+if __name__ == '__main__':
+    ev = Evaluation()
+    ev.check_matrix()
 

@@ -46,13 +46,19 @@ if __name__ == '__main__':
    frame_right.config(relief="ridge")  
 
 # -------------------- Evaluations side---------------------------------------
+   
+   def set_formats():
+      ev = Evaluation()
+      ev.check_matrix()
+      root.quit()        
+   
    title_1 = Label(frame_left, text = "EVALUACIONES", font=("Open Sans", 12))
    title_1.pack(side='top', pady= 15, padx=10)   
    
    EvLabel = Label(frame_left, text = "Nueva evaluación", font = ("Open Sans", 9))
    EvLabel.pack(side = 'top')
 
-   EvButton = Button(frame_left, text = "Diseño de evaluación")
+   EvButton = Button(frame_left, text = "Crear formularios", command= set_formats)
    EvButton.pack(side = 'top')
    
    EmptyLabel = Label(frame_left)
@@ -70,11 +76,11 @@ if __name__ == '__main__':
 # -------------------- Simulations side---------------------------------------
 
    def newcompany():
-      root.destroy()
+      #root.destroy()
       Company = Sim_comp()
       Company.set_company()
+      root.quit()
       
-   
    title_2 = Label(frame_right, text = "SIMULACIONES", font=("Open Sans", 12))
    title_2.pack(side='top', pady= 15, padx=10)   
    

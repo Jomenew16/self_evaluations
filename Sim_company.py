@@ -45,14 +45,11 @@ class Sim_comp():
             num_colabs.set(20)
 
             def readEntry(event=None):
-                
+                #global num_colabs
                 try:    
                     self.num_collaborators = num_colabs.get()
-                #     self.num_collaborators = int(self.num_collaborators)
                 except:
                     messagebox.showwarning('Aviso', 'Introduce un número entero')
-                    #root_colabs.destroy() 
-                    #print("The input has to be an integer")
                 finally:
                     if isinstance(self.num_collaborators, int):
                         if self.num_collaborators >= 7:
@@ -63,8 +60,6 @@ class Sim_comp():
                         self.num_collaborators = 0 
 
                 root_colabs.destroy()
-
-
 
                 print(self.num_collaborators)
 
@@ -88,8 +83,6 @@ class Sim_comp():
             
             #self.num_collaborators = input("How many collaborators are there?: ")
             root_colabs.mainloop()
-            
-
             
 
         self._people = [names.get_full_name() for i in range(self.num_collaborators)]    
@@ -287,6 +280,7 @@ class Sim_comp():
         #with ExcelWriter('./archivos/interacciones.xlsx') as writer:
         #    self.comp_df.to_excel(writer)
 
+
 if __name__ == '__main__':
-    company = Sim_comp()
-    company.set_company()
+    Company = Sim_comp()
+    Company.set_company()
