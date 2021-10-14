@@ -33,7 +33,7 @@ class Evaluation:
         
 #-----------------------read the interactions matrix---------------------------------------
 
-    def check_matrix(self):
+    def check_matrix(self, num_evaluators):
     #This method reads the matrix & checks that the matrix is well build. Transposition of the matrix equals the original one
     #introduce el numbre del archivo
         
@@ -41,10 +41,9 @@ class Evaluation:
         raiz = Tk()
         raiz.withdraw()
         file_path =filedialog.askopenfilename(title="Seleccione el archivo de interacciones", initialdir='./archivos')
-        #raiz.update()
+        
         raiz.destroy()
-        #file = 'interacciones.csv' #input("Input the name of the file: ")
-        #path = './archivos/{}'.format(file)
+        #print(file_path)
         self.__matrix = pd.read_csv(file_path)
         
 
@@ -57,12 +56,12 @@ class Evaluation:
             self.__collaborators = list(self.__matrix.columns)
             self.__num_collaborators = len(self.__collaborators)
             #print("se ha leído el archivo")
-            self.read_interactions()
+            self.read_interactions(num_evaluators)
         else:
             print("The matrix is not symetrical. Check the interactions")
 
 
-    def read_interactions(self):
+    def read_interactions(self, num_evaluators):
         #We have the matrix. Now we need to rescue the contacts of each collaborator. 
         #We build a list of lists, where each collaborator is the index, and has a list with the index of the colleagues
 
@@ -89,64 +88,18 @@ class Evaluation:
     
     
     #With this list, we will build the evaluators & evaluates...
-        self.set_evaluators()
+        self.set_evaluators(num_evaluators)
 
 #------------------------------- random selection of the evaluators --------------------------
 
-    def set_evaluators(self):
+    def set_evaluators(self, num_evaluators):
+        self.__mx_evaluators = num_evaluators
+        print(self.__mx_evaluators)
+        
     # Every collaborator will be evaluated by a number of evaluators. 
     # The number of evaluator will be the same for each collaborator, unless, he/she interacts with less people
     # No one will conduct more than a specified number of evaluations
         
-        #In principle, we will use 10 as the default for the maximum number of evaluations self.__mx_evaluations = 10 
-        #Choose de number of evaluators per persons
-        #print("llegamos a establecer evaluadores")
-        while self.__mx_evaluators <3:
-            
-            ev_root = Tk()
-
-            num_evaluations = IntVar()
-            num_evaluations.set(7) 
-            
-
-            def evaluations(event=None):
-                try:    
-                    self.__mx_evaluators = num_evaluations.get()
-                except:
-                    messagebox.showwarning('Aviso', 'Debes escoger un número entero')
-                    #print("Debes escoger un número entero")
-                finally:
-                    if isinstance(self.__mx_evaluators, int):
-                        if self.__mx_evaluators >= 3:
-                            pass
-                        else:
-                            messagebox.showwarning('Aviso', 'Escoge al menos 3 evaluadores por colaborador')            
-                            #print("\nEscoge al menos 3 evaluadores por colaborador\n")
-                    else:
-                        self.__mx_evaluators = 0 
-                ev_root.destroy()
-                print(self.__mx_evaluators)
-            
-            def cancelp():
-                ev_root.destroy()
-                exit()
-
-            txLabel = Label(ev_root, text="Cuántas evaluaciones se requieren por cada colaborador")
-            txLabel.pack(side="top")
-
-            numEntry = Entry(ev_root, textvariable=num_evaluations)
-            numEntry.pack(side='top')
-
-            evButton = Button(ev_root, text="iniciar", command = evaluations)
-            #evButton.focus()
-            #evButton.bind('<Return>', evaluations)
-            evButton.pack(side='top')
-
-            cancelButton = Button(ev_root, text="Cancelar", command = cancelp)
-            cancelButton.pack( pady=10)
-
-            ev_root.mainloop()
-            #self.__mx_evaluators = input("¿Cuantas evaluaciones se requieren por cada colaborador?: \n")
 
         #inicializar las listas self.__evaluates[] y self.__evaluators[], con su número de elementos
         self.__evaluates = [[] for i in range(0,self.__num_collaborators)] 
@@ -175,8 +128,6 @@ class Evaluation:
                 else:
                     return list_top_evaluators[0]
 
-
-            
             #First evaluator when the dim is 0
             evaluator = int(random.choice(colb_aux))
             self.__evaluates[evaluator].append(person_index)
@@ -374,13 +325,13 @@ class Evaluation:
             row=[]
             with open(file,'r',newline='', encoding='utf-8-sig') as editfile:
                 readfile = csv.reader(editfile)                                        
-                for i in range(1,9):
+                for i in range(1,10):
                     row.append(next(readfile))
                     
             
             with open(file,'w',newline='', encoding='utf-8-sig') as editfile:
                 writefile = csv.writer(editfile)
-                for i in range(8):
+                for i in range(9):
                     writefile.writerow(row[i])
             
             df_aux.to_csv(file, index = False, mode='a', encoding='utf-8-sig') 

@@ -8,20 +8,21 @@ from pandas import ExcelWriter
 from pathlib import Path
 from tkinter import *
 from tkinter import messagebox
+from menu import Menu
 
 #sys.setrecursionlimit(1000000)
 
-class Sim_comp():
+class Sim_comp:
 
     # Rules of assigment: Production (40% of employees) General management (Max(1%,1)) Administration (20%) 
     #  Talent (Max(2%, 1)) Sales (Max(4%,1)), Accounts(Max(0.5%,1)), Purchasing(Max(0,5%),1), 
     # IT(Max(2%,1)), R&D (Max(3%,1), Engineering(3%,1), Legal(Max(1%,1)), Customer service(Max(1%,1), 
     # After sales(Max(1%,1)))    
 
+    #Receives from Menú, de number of collaborators....
 
-
-    def __init__(self) -> None:
-        self.num_collaborators: int = 0
+    def __init__(self, num_collaborators) -> None:
+        self.num_collaborators: int = num_collaborators
         self._people = []
         self.departments = ['Production', 'General management','Administration', 'Talent', 'Sales', 'Accounts', 
         'Purchasing', 'IT', 'R&D', 'Engineering', 'Legal', 'Customer service', 'After sales', 'Others']
@@ -32,57 +33,60 @@ class Sim_comp():
         self.__list_managers = []
         self.__list_submanagers = []
         self.__column_dept = []
+        self.set_company()
 
  
     
     def set_company(self):
         
-        while self.num_collaborators <7:
+        #Number of collaborators come from Menu
+
+        #while self.num_collaborators <7:
             
-            root_colabs = Tk()
+            #root_colabs = Tk()
 
-            num_colabs = IntVar()
-            num_colabs.set(20)
-
-            def readEntry(event=None):
-                #global num_colabs
-                try:    
-                    self.num_collaborators = num_colabs.get()
-                except:
-                    messagebox.showwarning('Aviso', 'Introduce un número entero')
-                finally:
-                    if isinstance(self.num_collaborators, int):
-                        if self.num_collaborators >= 7:
-                            pass
-                        else:
-                            messagebox.showwarning('Aviso', 'La empresa debe tener al menos 7 colaboradores')            
-                    else:
-                        self.num_collaborators = 0 
-
-                root_colabs.destroy()
-
-                print(self.num_collaborators)
-
-            def cancel():
-                root_colabs.destroy()
-                exit()
-
-            sizeLabel = Label(root_colabs, text= "Tamaño de la empresa (número de colaboradores)", font = ("Open Sans", 10))
-            sizeLabel.pack(side = "top")
-
-            sizeText = Entry(root_colabs, textvariable= num_colabs)
-            sizeText.pack(side="top")
-
-            sizeButton = Button(root_colabs, text="Iniciar", command = readEntry)
-            sizeButton.focus()
-            sizeButton.bind('<Return>', readEntry)
-            sizeButton.pack(pady=10)
-
-            cancelButton = Button(root_colabs, text="Cancelar", command = cancel)
-            cancelButton.pack( pady=10)
-            
-            #self.num_collaborators = input("How many collaborators are there?: ")
-            root_colabs.mainloop()
+            #num_colabs = IntVar()
+            #num_colabs.set(20)
+#
+            #def readEntry(event=None):
+            #    #global num_colabs
+            #    try:    
+            #        self.num_collaborators = num_colabs.get()
+            #    except:
+            #        messagebox.showwarning('Aviso', 'Introduce un número entero')
+            #    finally:
+            #        if isinstance(self.num_collaborators, int):
+            #            if self.num_collaborators >= 7:
+            #                pass
+            #            else:
+            #                messagebox.showwarning('Aviso', 'La empresa debe tener al menos 7 colaboradores')            
+            #        else:
+            #            self.num_collaborators = 0 
+#
+            #    root_colabs.destroy()
+#
+            #    print(self.num_collaborators)
+#
+            #def cancel():
+            #    root_colabs.destroy()
+            #    exit()
+#
+            #sizeLabel = Label(root_colabs, text= "Tamaño de la empresa (número de colaboradores)", font = ("Open Sans", 10))
+            #sizeLabel.pack(side = "top")
+#
+            #sizeText = Entry(root_colabs, textvariable= num_colabs)
+            #sizeText.pack(side="top")
+#
+            #sizeButton = Button(root_colabs, text="Iniciar", command = readEntry)
+            #sizeButton.focus()
+            #sizeButton.bind('<Return>', readEntry)
+            #sizeButton.pack(pady=10)
+#
+            #cancelButton = Button(root_colabs, text="Cancelar", command = cancel)
+            #cancelButton.pack( pady=10)
+            #
+            ##self.num_collaborators = input("How many collaborators are there?: ")
+            #root_colabs.mainloop()
             
 
         self._people = [names.get_full_name() for i in range(self.num_collaborators)]    
@@ -281,6 +285,6 @@ class Sim_comp():
         #    self.comp_df.to_excel(writer)
 
 
-if __name__ == '__main__':
-    Company = Sim_comp()
-    Company.set_company()
+#if __name__ == '__main__':
+#    Company = Sim_comp()
+#    Company.set_company()
