@@ -33,27 +33,28 @@ class EvaluationsAssessment:
         #read a files and get the main data
 
         for i, file in enumerate(ev_files):
-          with open(ev_files[i], mode='r', newline='', encoding='utf-8-sig') as readfile:
+          with open(file, mode='r', newline='', encoding='utf-8-sig') as readfile:
             filedata = csv.reader(readfile)
             row = []
 
-            #leer las primeras 9 filas
+            #leer las primeras 10 filas
 
-            for j in range(10):
+            for j in range(11):
               row.append(next(filedata))
           
-          col_evaluation = pd.read_csv(ev_files[i], skiprows=9, encoding='utf-8-sig')
+          col_evaluation = pd.read_csv(ev_files[i], skiprows=10, encoding='utf-8-sig')
 
           self.__evaluation_data[row[0][1]] = {
-              'file_name': get_file_name(ev_files[i], len(filename) + 1),
-              'file_path': ev_files[i],
+              'file_name': get_file_name(file, len(filename) + 1),
+              'file_path': file,
               'status': False,
+              'area': row[2][1],
               'completion': 0.0,
               'date' :  datetime.strptime(row[1][1], '%d/%m/%Y'),
               'today' : datetime.now(), 
               'frequency' : 60, #days
               'evaluator' : row[0][1],
-              'evaluates': row[9][1:],
+              'evaluates': row[10][2:],
               'evaluators': [],
               'log_data': col_evaluation.convert_dtypes(),
               'evaluation_results' : pd.DataFrame(index = col_evaluation['Preguntas']),
@@ -65,7 +66,7 @@ class EvaluationsAssessment:
               'out_of_range_evaluates': []
           }
 
- # print(evaluation_data['Leona Ellison']['log_data'])        
+    #print(evaluation_data['Leona Ellison']['log_data'])        
 
 #Read the dictionaries and complete the degree of completion, the evaluatos and the evaluations results
 
@@ -76,15 +77,18 @@ class EvaluationsAssessment:
             num_na = log_df.isna().sum().sum()
             size = log_df.size
             k['completion'] = (size - num_na) / size * 100
+            k['evaluation_results'].insert(0, 'Autoevaluación', list(k['log_data'][j + ' (Autoevaluación)']))
+            #k['evaluation_results']['Autoevaluación'] = list(k['log_data'][j + ' (Autoevaluación)'])
 
             for n in k['evaluates']:
               self.__evaluation_data[n]['evaluators'].append(j)
-              self.__evaluation_data[n]['evaluation_results'][j]= list(k['log_data'][n])  
+              self.__evaluation_data[n]['evaluation_results'][j]= list(k['log_data'][n])
+              
 
 #       
 
-        #print(self.__evaluation_data['Leona Ellison']['completion'])
-        #print(evaluation_data['Leona Ellison']['evaluation_results'])
+        #print(self.__evaluation_data['Kelly White'])
+        print(self.__evaluation_data['Addie Smith'])
 
         #self.checkplan()
 #---------------------------- ADDITIONAL CHECKING WITH THE DESIGNED PLAN IN EVALUATORS.CSV FILE-------------------

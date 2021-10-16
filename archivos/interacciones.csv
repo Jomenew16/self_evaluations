@@ -1,11 +1,21 @@
-Collaborators,Areas,Steven Jensen,Nettie Palladino,Veronica Apodaca,Nancy Nichols,Elizabeth Kenny,Andrea Moore,Helene Lee,Clifford Giese,Gladys Collins,Kristine Buck
-Steven Jensen,Production,,1.0,1.0,1.0,1.0,1.0,,1.0,1.0,1.0
-Nettie Palladino,Production,1.0,,1.0,1.0,,,,1.0,,
-Veronica Apodaca,Production,1.0,1.0,,1.0,,,,1.0,,
-Nancy Nichols,Production,1.0,1.0,1.0,,,,,1.0,,
-Elizabeth Kenny,General management,1.0,,,,,1.0,,1.0,1.0,1.0
-Andrea Moore,Administration,1.0,,,,1.0,,1.0,1.0,1.0,1.0
-Helene Lee,Administration,,,,,,1.0,,1.0,,
-Clifford Giese,Talent,1.0,1.0,1.0,1.0,1.0,1.0,1.0,,1.0,1.0
-Gladys Collins,Sales,1.0,,,,1.0,1.0,,1.0,,1.0
-Kristine Buck,Accounts,1.0,,,,1.0,1.0,,1.0,1.0,
+Collaborators,Areas,Guillermo Balderas,Diane Burton,Mary Galle,Jim Green,Robert Keeler,Hector Thomas,Donna Layman,Leola Bell,John Proffitt,Melanie Moran,David Voeltner,Marlys Garcia,Addie Smith,Joseph Neang,Kelly White,Willie Lawrence,Robert Cunningham,George Spencer,Brent Acosta,Wendy Tucker
+Guillermo Balderas,Production,,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,,,,,1.0,1.0,1.0,1.0,1.0
+Diane Burton,Production,1.0,,1.0,1.0,1.0,1.0,1.0,1.0,1.0,,,,,,,1.0,,,,
+Mary Galle,Production,1.0,1.0,,1.0,1.0,1.0,1.0,1.0,1.0,,,,,,,1.0,,,,
+Jim Green,Production,1.0,1.0,1.0,,1.0,1.0,1.0,1.0,1.0,,,,,,,1.0,,,,
+Robert Keeler,Production,1.0,1.0,1.0,1.0,,1.0,1.0,1.0,1.0,,,,,,,1.0,,,,
+Hector Thomas,Production,1.0,1.0,1.0,1.0,1.0,,1.0,1.0,1.0,,,,,,,1.0,,,,
+Donna Layman,Production,1.0,1.0,1.0,1.0,1.0,1.0,,1.0,1.0,,,,,,,1.0,,,,
+Leola Bell,Production,1.0,1.0,1.0,1.0,1.0,1.0,1.0,,1.0,,,,,,,1.0,,,,
+John Proffitt,Production,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,,,,,,,,1.0,,,,
+Melanie Moran,General management,1.0,,,,,,,,,,1.0,,,,,1.0,1.0,1.0,1.0,1.0
+David Voeltner,Administration,1.0,,,,,,,,,1.0,,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0
+Marlys Garcia,Administration,,,,,,,,,,,1.0,,1.0,1.0,1.0,1.0,,,,
+Addie Smith,Administration,,,,,,,,,,,1.0,1.0,,1.0,1.0,1.0,,,,
+Joseph Neang,Administration,,,,,,,,,,,1.0,1.0,1.0,,1.0,1.0,,,,
+Kelly White,Administration,,,,,,,,,,,1.0,1.0,1.0,1.0,,1.0,,,,
+Willie Lawrence,Talent,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,,1.0,1.0,1.0,1.0
+Robert Cunningham,Sales,1.0,,,,,,,,,1.0,1.0,,,,,1.0,,1.0,1.0,1.0
+George Spencer,Accounts,1.0,,,,,,,,,1.0,1.0,,,,,1.0,1.0,,1.0,1.0
+Brent Acosta,Purchasing,1.0,,,,,,,,,1.0,1.0,,,,,1.0,1.0,1.0,,1.0
+Wendy Tucker,IT,1.0,,,,,,,,,1.0,1.0,,,,,1.0,1.0,1.0,1.0,

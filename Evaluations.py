@@ -30,6 +30,7 @@ class Evaluation:
         self.__collaborators = [] #list of all the collaborators in the order of the original matrix
         self.__num_collaborators: int
         self.__list_interactions = []
+        self.__list_areas= []
         
 #-----------------------read the interactions matrix---------------------------------------
 
@@ -45,7 +46,8 @@ class Evaluation:
         raiz.destroy()
         #print(file_path)
         self.__matrix = pd.read_csv(file_path)
-        
+
+        self.__list_areas = self.__matrix['Areas']
 
     #Drop the column of Areas
         self.__matrix.drop(columns=['Areas','Collaborators'], axis=1, inplace=True)    
@@ -198,7 +200,8 @@ class Evaluation:
             path = './archivos/{}_Evaluacion'.format(time.strftime('%Y%m%d')[2:]) + '_v' + str(vers)
             Path(path).mkdir(parents=True, exist_ok=True)
             for i in range(self.__num_collaborators):
-                form = pd.DataFrame(index=questions, columns=evaluates[i][1:])
+                form = pd.DataFrame(index=questions, columns=evaluates[i][0:])
+                form.rename(columns={evaluates[i][0]: evaluates[i][0] + ' (Autoevaluación)'}, inplace=True)
                 evaluator = evaluates[i][0]
                 path1 = path + '/{}_form.csv'.format(evaluator)    
 
@@ -206,6 +209,7 @@ class Evaluation:
                     file = csv.writer(ev_file)
                     file.writerow(["Evaluador:", evaluator])
                     file.writerow(["Date:", time.strftime('%d/%m/%Y')])
+                    file.writerow(["Area:", self.__list_areas[i]])
                     file.writerow([])
                     file.writerow(['INSTRUCCIONES'])
                     file.writerow(['Cumplimenta con valores del 1 al 5, donde 1 representa "Totalmente en desacuerdo" y 5 "Totalmente de acuerdo"'])
@@ -314,7 +318,7 @@ class Evaluation:
 
         for file in files_names:
 
-            df_aux = pd.read_csv(file, skiprows=9, encoding='utf-8-sig')
+            df_aux = pd.read_csv(file, skiprows=10, encoding='utf-8-sig')
            
             for i in range(len(df_aux.columns)-1):
                 score = self.person_evaluation()
@@ -325,13 +329,13 @@ class Evaluation:
             row=[]
             with open(file,'r',newline='', encoding='utf-8-sig') as editfile:
                 readfile = csv.reader(editfile)                                        
-                for i in range(1,10):
+                for i in range(1,11):
                     row.append(next(readfile))
                     
             
             with open(file,'w',newline='', encoding='utf-8-sig') as editfile:
                 writefile = csv.writer(editfile)
-                for i in range(9):
+                for i in range(10):
                     writefile.writerow(row[i])
             
             df_aux.to_csv(file, index = False, mode='a', encoding='utf-8-sig') 
@@ -344,7 +348,7 @@ class Evaluation:
     #    files_names = [x for x in glob.glob(filename + '/*.csv') if x.endswith(".csv")]   
         
                 
-if __name__ == '__main__':
-    ev = Evaluation()
-    ev.check_matrix()
+#if __name__ == '__main__':
+#    ev = Evaluation()
+#    ev.check_matrix()
 
