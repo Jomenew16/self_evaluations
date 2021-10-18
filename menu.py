@@ -23,14 +23,19 @@ class Menu(Frame):
    #Create two frames
 
       self.frame_left = Frame(self.master, width=300, height= 500)
-      self.frame_left.pack(side='left', expand='True')
+      self.frame_left.pack(side=LEFT, expand='True')
       self.frame_left.config(bd=10)
       self.frame_left.config(relief="ridge")  
 
       self.frame_right = Frame(self.master, width=300, height= 500)
-      self.frame_right.pack(side='right', expand='True')
+      self.frame_right.pack(side= RIGHT, expand='True')
       self.frame_right.config(bd=10)
       self.frame_right.config(relief="ridge")        
+
+      self.frame_bottom = Frame(self.master, width=300, height= 150)
+      self.frame_bottom.pack(side= BOTTOM, expand='True')
+      self.frame_bottom.config(bd=10)
+              
 
 #-------------------- Evaluations side -----------------------------------------
 
@@ -77,14 +82,27 @@ class Menu(Frame):
 
       self.EmptyLabel4 = Label(self.frame_right)
       self.EmptyLabel4.pack(pady=10)
+   
+   # -------------------- Cancel - bottom side side---------------------------------------
 
+      self.CompButton = Button(self.frame_bottom, text = "Salir", command= self.salir_programa)
+      self.CompButton.pack(side = BOTTOM)
+
+   def salir_programa(self):
+      self.master.destroy()
+      exit()
+   
+   def destroy_main_frames(self):
+      self.frame_left.destroy()
+      self.frame_right.destroy()
+      self.frame_bottom.destroy()
 
    def set_formats(self):
 
       #if entering for the first time, drops the main menú frames
       if self.first_try_formats:
-         self.frame_left.destroy()
-         self.frame_right.destroy()
+         self.destroy_main_frames()
+         
       
       #get the number of evaluators required
       sample_evaluators = 0
@@ -149,8 +167,7 @@ class Menu(Frame):
       
       #if entering for the first time, drops the main menú frames
       if self.first_try_comp:
-         self.frame_left.destroy()
-         self.frame_right.destroy()  
+         self.destroy_main_frames()
       
       company_size = 0
 
