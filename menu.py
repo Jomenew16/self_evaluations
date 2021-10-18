@@ -14,7 +14,7 @@ class Menu(Frame):
        self.first_try_comp = True
        self.first_try_formats = True
        self.main_menu_widgets()
-       #print(self.main)  
+      
        #self.pack(padx=20, pady=10)
       
    
@@ -23,17 +23,17 @@ class Menu(Frame):
    #Create two frames
 
       self.frame_left = Frame(self.master, width=300, height= 500)
-      self.frame_left.pack(side=LEFT, expand='True')
+      self.frame_left.grid(row=0, column=0)
       self.frame_left.config(bd=10)
       self.frame_left.config(relief="ridge")  
 
       self.frame_right = Frame(self.master, width=300, height= 500)
-      self.frame_right.pack(side= RIGHT, expand='True')
+      self.frame_right.grid(row=0, column=1)
       self.frame_right.config(bd=10)
       self.frame_right.config(relief="ridge")        
 
       self.frame_bottom = Frame(self.master, width=300, height= 150)
-      self.frame_bottom.pack(side= BOTTOM, expand='True')
+      self.frame_bottom.grid(row=1, columnspan=2)
       self.frame_bottom.config(bd=10)
               
 
@@ -122,7 +122,7 @@ class Menu(Frame):
               sample_evaluators = num_evaluations.get()
           except:
               messagebox.showwarning('Aviso', 'Debes escoger un número entero')
-              #print("Debes escoger un número entero")
+              
           finally:
               if isinstance(sample_evaluators, int):
                   if sample_evaluators >= 3:
@@ -144,7 +144,7 @@ class Menu(Frame):
                   destroy_formats_menu()
                   self.set_formats() 
           
-          print(sample_evaluators)
+          
       
       def back_to_main ():
           destroy_formats_menu()

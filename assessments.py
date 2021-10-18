@@ -158,7 +158,7 @@ class EvaluationsAssessment:
       def check_pckl_file(dirct:str):
         return True if dirct.find('_pkl') !=-1 else False
 
-      pkl_files = [x for x in glob.glob('./archivos/'+'/*') if check_pckl_file(x) == True] 
+      pkl_files = [x for x in glob.glob('./archivos/'+'/*') if check_pckl_file(x)] 
       print(pkl_files)
       past_evaluations = []
       for i in pkl_files:
@@ -170,7 +170,7 @@ class EvaluationsAssessment:
 
     def checkplan(self):
 
-        #optional verification of the consistency of the logged data with the evaluators original design
+        #verification of the consistency of the logged data with the evaluators original design
 
         #this function compares 2 sets. If they are equal, returns True, else False
         def check_sets(set1, set2):

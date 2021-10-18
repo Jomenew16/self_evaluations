@@ -44,7 +44,7 @@ class Evaluation:
         file_path =filedialog.askopenfilename(title="Seleccione el archivo de interacciones", initialdir='./archivos')
         
         raiz.destroy()
-        #print(file_path)
+        
         self.__matrix = pd.read_csv(file_path)
 
         self.__list_areas = self.__matrix['Areas']
@@ -57,10 +57,11 @@ class Evaluation:
         if self.__matrix.values.all() == self.__matrix.values.T.all():
             self.__collaborators = list(self.__matrix.columns)
             self.__num_collaborators = len(self.__collaborators)
-            #print("se ha leído el archivo")
+            
             self.read_interactions(num_evaluators)
         else:
-            print("The matrix is not symetrical. Check the interactions")
+            messagebox.showwarning('¡Aviso!', 'La matriz no es simétrica. Comprueba las interacciones')
+            
 
 
     def read_interactions(self, num_evaluators):
@@ -96,7 +97,7 @@ class Evaluation:
 
     def set_evaluators(self, num_evaluators):
         self.__mx_evaluators = num_evaluators
-        print(self.__mx_evaluators)
+        
         
     # Every collaborator will be evaluated by a number of evaluators. 
     # The number of evaluator will be the same for each collaborator, unless, he/she interacts with less people
@@ -241,7 +242,7 @@ class Evaluation:
 
 
         mydatetime = datetime.now()
-        path = "./archivos"
+        path = "./archivos/0_Diseños de evaluación"
         Path(path).mkdir(parents=True, exist_ok=True)
 
         #if the file already exists, add subsequent versions
@@ -312,33 +313,38 @@ class Evaluation:
     
     def autoevaluations(self):
 
+        raiz = Tk()
+        raiz.withdraw()    
         filename =filedialog.askdirectory(title="Selecciona el directorio con los formularios de evaluación sin cumplimentar", initialdir='./archivos')
-        files_names = [x for x in glob.glob(filename + '/*.csv') if x.endswith(".csv")]
-        
+        raiz.destroy()
+        if filename:
+            messagebox.showinfo('¡Excelente!','Los archivos ya se están rellenando')
+            files_names = [x for x in glob.glob(filename + '/*.csv') if x.endswith(".csv")]
 
-        for file in files_names:
 
-            df_aux = pd.read_csv(file, skiprows=10, encoding='utf-8-sig')
-           
-            for i in range(len(df_aux.columns)-1):
-                score = self.person_evaluation()
-                for j,k in enumerate(score):
-                    df_aux.iloc[j,i+1] = k
-            df_aux.rename(columns={'Unnamed: 0': 'Preguntas'}, inplace=True)
-            
-            row=[]
-            with open(file,'r',newline='', encoding='utf-8-sig') as editfile:
-                readfile = csv.reader(editfile)                                        
-                for i in range(1,11):
-                    row.append(next(readfile))
-                    
-            
-            with open(file,'w',newline='', encoding='utf-8-sig') as editfile:
-                writefile = csv.writer(editfile)
-                for i in range(10):
-                    writefile.writerow(row[i])
-            
-            df_aux.to_csv(file, index = False, mode='a', encoding='utf-8-sig') 
+            for file in files_names:
+
+                df_aux = pd.read_csv(file, skiprows=10, encoding='utf-8-sig')
+
+                for i in range(len(df_aux.columns)-1):
+                    score = self.person_evaluation()
+                    for j,k in enumerate(score):
+                        df_aux.iloc[j,i+1] = k
+                df_aux.rename(columns={'Unnamed: 0': 'Preguntas'}, inplace=True)
+
+                row=[]
+                with open(file,'r',newline='', encoding='utf-8-sig') as editfile:
+                    readfile = csv.reader(editfile)                                        
+                    for i in range(1,11):
+                        row.append(next(readfile))
+
+
+                with open(file,'w',newline='', encoding='utf-8-sig') as editfile:
+                    writefile = csv.writer(editfile)
+                    for i in range(10):
+                        writefile.writerow(row[i])
+
+                df_aux.to_csv(file, index = False, mode='a', encoding='utf-8-sig') 
 
 # ----------------------------------------- Assessment ----------------------------
 # 
