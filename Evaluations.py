@@ -201,8 +201,11 @@ class Evaluation:
             path = './archivos/{}_Evaluacion'.format(time.strftime('%Y%m%d')[2:]) + '_v' + str(vers)
             Path(path).mkdir(parents=True, exist_ok=True)
             for i in range(self.__num_collaborators):
-                form = pd.DataFrame(index=questions, columns=evaluates[i][0:])
+                #form = pd.DataFrame(index=questions, columns=evaluates[i][0:])
+                form = pd.DataFrame(columns=evaluates[i][0:])
+                form['Preguntas'] = questions
                 form.rename(columns={evaluates[i][0]: evaluates[i][0] + ' (Autoevaluación)'}, inplace=True)
+                form.set_index(['Preguntas'], inplace=True)
                 evaluator = evaluates[i][0]
                 path1 = path + '/{}_form.csv'.format(evaluator)    
 
@@ -330,7 +333,7 @@ class Evaluation:
                     score = self.person_evaluation()
                     for j,k in enumerate(score):
                         df_aux.iloc[j,i+1] = k
-                df_aux.rename(columns={'Unnamed: 0': 'Preguntas'}, inplace=True)
+                #df_aux.rename(columns={'Unnamed: 0': 'Preguntas'}, inplace=True)
 
                 row=[]
                 with open(file,'r',newline='', encoding='utf-8-sig') as editfile:

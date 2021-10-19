@@ -22,12 +22,32 @@ class EvaluationsAssessment:
     def __init__(self) -> None:
         self.__evaluation_data = {}
 
-    def read_directories(self):
+#------------------------- General tools -------------------------------------------------------
 
-        #read the evaluation directories and files. Use
-        filename =filedialog.askdirectory(title="Selecciona el directorio de la evaluación actual", initialdir='./archivos')
-        ev_files = [x for x in glob.glob(filename + '/*.csv') if x.endswith(".csv")] 
-        
+    def identify_string (self, path_file: str, string_str) -> bool:
+      #identify is a string (file) has a certain substring
+          return True if path_file.find(string_str) !=-1 else False
+
+#---------------------------------Read the last evaluation in the archivos directory------------------
+    
+    def read_directories(self):
+        #print("aquí tamos")
+        #read the last evaluation directory from /archivos
+          
+
+        #distinguish directories and files, for we have to find the last directory
+        thisdir = os.getcwd()
+        #ev_files = [os.path.join(r, file) for r,d,f in os.walk('./archivos') for file in f]
+        #identify directories with with *_Evaluacion_* in the name
+        directories = [direct for r,d,f in os.walk(thisdir + '/archivos') for direct in d if self.identify_string(direct,'_Evaluacion_')]
+        #filename =filedialog.askdirectory(title="Selecciona el directorio de la evaluación actual", initialdir='./archivos')
+        last_evaluation_path = thisdir+'/archivos/'+ max(directories)
+        #last_evaluation_path = (thisdir+'/archivos/'+ max(directories)).replace('\\','/')
+        print(last_evaluation_path)
+        ev_files = [x for x in glob.glob(last_evaluation_path+'/*.csv')]
+
+        print(ev_files)
+
         def get_file_name(file, len_dir):
             return file[len_dir:]      
         #read a files and get the main data
@@ -45,7 +65,7 @@ class EvaluationsAssessment:
           col_evaluation = pd.read_csv(ev_files[i], skiprows=10, encoding='utf-8-sig')
 
           self.__evaluation_data[row[0][1]] = {
-              'file_name': get_file_name(file, len(filename) + 1),
+              'file_name': get_file_name(file, len(last_evaluation_path) + 1),
               'file_path': file,
               'status': False,
               'area': row[2][1],
@@ -68,7 +88,7 @@ class EvaluationsAssessment:
               'out_of_range_evaluates': []
           }
 
-      # print(evaluation_data['Leona Ellison'])        
+             
 
 #Read the dictionaries and complete the main dictionary with degree of completion, the evaluators and the evaluations results
 
@@ -120,7 +140,7 @@ class EvaluationsAssessment:
 
 #       
 
-        #print(self.__evaluation_data['Kelly White'])
+        print(self.__evaluation_data['Debra Brown'])
         #print(self.__evaluation_data['Addie Smith'])
 
         #self.checkplan()

@@ -7,6 +7,8 @@ from Sim_company import *
 from Evaluations import *
 from tkinter import *
 
+from assessments import EvaluationsAssessment
+
 class Menu(Frame):
    
 
@@ -244,7 +246,11 @@ class Menu(Frame):
       
       if self.first_try:
          self.destroy_main_frames()
-   
+
+      last_ev = EvaluationsAssessment()
+      last_ev.read_directories()  #reads the last evaluation data from the archivos directory
+      
+
    #  Set dimensions of the screen
       total_width = self.master.winfo_screenwidth()
       total_height = self.master.winfo_screenheight()
@@ -268,11 +274,18 @@ class Menu(Frame):
 
 # First Frame includes checking of formats status and of evaluators
 
-      dateLabel = Label(frame1, text="Fecha", font=('Open Sans', 20))
+      #we need date and checkings
+      #1- FIND LAS EVALUATION
+
+      dateLabel = Label(frame1, text="Fecha:", font=('Open Sans', 12))
       dateLabel.grid(row=0, column=0)
       f = font.Font(dateLabel, dateLabel.cget("font"))
       f.configure(underline=True)
       dateLabel.configure(font = f)
+
+      #evDate = Label(frame1, text=fecha, font=('Open Sans', 12, 'bold'))
+      #dateLabel.grid(row=0, column=1)
+      
 
    #   
    #   #get the number of evaluators required
