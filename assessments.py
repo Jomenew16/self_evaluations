@@ -140,12 +140,17 @@ class EvaluationsAssessment:
 
 #       
 
-        print(self.__evaluation_data['Debra Brown'])
+        #print(self.__evaluation_data['Debra Brown'])
         #print(self.__evaluation_data['Addie Smith'])
 
         #self.checkplan()
 #---------------------------- ADDITIONAL CHECKING WITH THE DESIGNED PLAN IN EVALUATORS.CSV FILE-------------------
 ###############################THERE ARE A LOT OF PRINT MESSAGES, TRASNFORM TO GUI#################
+
+    @property
+    def evaluation_data(self):
+      return self.__evaluation_data
+
 
     def save_data(self):
        #Save data of each evaluation in a separate pickle file in 'archivos'. These files will serve to conduct the later comparisons among evaluations. So we extract the evaluation name with data 

@@ -249,7 +249,8 @@ class Menu(Frame):
 
       last_ev = EvaluationsAssessment()
       last_ev.read_directories()  #reads the last evaluation data from the archivos directory
-      
+      names= last_ev.evaluation_data.keys()
+      date_of_evaluation = last_ev.evaluation_data[names[0]['date']]
 
    #  Set dimensions of the screen
       total_width = self.master.winfo_screenwidth()
@@ -283,8 +284,8 @@ class Menu(Frame):
       f.configure(underline=True)
       dateLabel.configure(font = f)
 
-      #evDate = Label(frame1, text=fecha, font=('Open Sans', 12, 'bold'))
-      #dateLabel.grid(row=0, column=1)
+      evDate = Label(frame1, text=date_of_evaluation, font=('Open Sans', 12, 'bold'))
+      evDate.grid(row=0, column=1)
       
 
    #   
