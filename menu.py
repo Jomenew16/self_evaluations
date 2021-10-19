@@ -1,6 +1,7 @@
 
 
 from datetime import date
+from datetime import datetime
 from random import sample
 from tkinter import font
 from Sim_company import *
@@ -249,8 +250,8 @@ class Menu(Frame):
 
       last_ev = EvaluationsAssessment()
       last_ev.read_directories()  #reads the last evaluation data from the archivos directory
-      names= last_ev.evaluation_data.keys()
-      date_of_evaluation = last_ev.evaluation_data[names[0]['date']]
+      names= list(last_ev.evaluation_data.keys())
+      date_of_evaluation = last_ev.evaluation_data[names[0]]['date']
 
    #  Set dimensions of the screen
       total_width = self.master.winfo_screenwidth()
@@ -278,13 +279,13 @@ class Menu(Frame):
       #we need date and checkings
       #1- FIND LAS EVALUATION
 
-      dateLabel = Label(frame1, text="Fecha:", font=('Open Sans', 12))
+      dateLabel = Label(frame1, text="Fecha de la evaluación:  ", font=('Open Sans', 12))
       dateLabel.grid(row=0, column=0)
       f = font.Font(dateLabel, dateLabel.cget("font"))
       f.configure(underline=True)
       dateLabel.configure(font = f)
 
-      evDate = Label(frame1, text=date_of_evaluation, font=('Open Sans', 12, 'bold'))
+      evDate = Label(frame1, text=date_of_evaluation.strftime('%d/%m/%Y'), font=('Open Sans', 12, 'bold'))
       evDate.grid(row=0, column=1)
       
 
