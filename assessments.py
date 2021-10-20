@@ -27,7 +27,14 @@ class EvaluationsAssessment:
     def identify_string (self, path_file: str, string_str) -> bool:
       #identify is a string (file) has a certain substring
           return True if path_file.find(string_str) !=-1 else False
-
+    
+    def get_file_name(self, file, len_dir):
+      #given a full path and the lenth of the directory, extracts the name of the file
+      return file[len_dir:]   
+    
+    #def get_ev_directory_name(self, file_path: str, file_name: str) -> str:
+    ##given a full path and the name of the file, extracts the name of the directory
+    #  return file_path.removesuffix(file_name)
 #---------------------------------Read the last evaluation in the archivos directory------------------
     
     def read_directories(self):
@@ -43,13 +50,9 @@ class EvaluationsAssessment:
         #filename =filedialog.askdirectory(title="Selecciona el directorio de la evaluación actual", initialdir='./archivos')
         last_evaluation_path = thisdir+'/archivos/'+ max(directories)
         #last_evaluation_path = (thisdir+'/archivos/'+ max(directories)).replace('\\','/')
-        print(last_evaluation_path)
+        
         ev_files = [x for x in glob.glob(last_evaluation_path+'/*.csv')]
-
-        print(ev_files)
-
-        def get_file_name(file, len_dir):
-            return file[len_dir:]      
+   
         #read a files and get the main data
 
         for i, file in enumerate(ev_files):
@@ -65,7 +68,7 @@ class EvaluationsAssessment:
           col_evaluation = pd.read_csv(ev_files[i], skiprows=10, encoding='utf-8-sig')
 
           self.__evaluation_data[row[0][1]] = {
-              'file_name': get_file_name(file, len(last_evaluation_path) + 1),
+              'file_name': self.get_file_name(file, len(last_evaluation_path) + 1),
               'file_path': file,
               'status': False,
               'area': row[2][1],
@@ -105,8 +108,12 @@ class EvaluationsAssessment:
             #k['evaluation_results']['Autoevaluación'] = list(k['log_data'][j + ' (Autoevaluación)'])
 
             for n in k['evaluates']:
-              self.__evaluation_data[n]['evaluators'].append(j)
-              self.__evaluation_data[n]['evaluation_results'][j]= list(k['log_data'][n])
+              try:
+                self.__evaluation_data[n]['evaluators'].append(j)
+                self.__evaluation_data[n]['evaluation_results'][j]= list(k['log_data'][n])
+              except:
+                messagebox.showinfo('Aviso', f'Puede haber un problema con la evaluación de {j}')
+                continue
 
 #---------------------------ONCE BUILD. SECOND ROUND TO INITIATE DE ASSESSMENT AND COMPLETE DATA-----------------------
 #TO BE INCLUDED WHNE NEEDED
@@ -133,10 +140,6 @@ class EvaluationsAssessment:
             ev_df['categorías'] = categories
             #final DataFrame for evaluation
             k['process_results'] = ev_df
-
-            #print(check_mean)
-            #print(k['full_columns'])
-            #print(k['removed_ev'])
 
 #       
 
@@ -193,22 +196,27 @@ class EvaluationsAssessment:
       print(past_evaluations)
         
 
+#----------------------------Submenu 1. Preliminary checking of the evaluation data with the design. Files are complete---------------
     def checkplan(self):
-
-        #verification of the consistency of the logged data with the evaluators original design
 
         #this function compares 2 sets. If they are equal, returns True, else False
         def check_sets(set1, set2):
+        #this function compares 2 sets. If they are equal, returns True, else False
           return len(set1 - set2) == 0
+        
         
     #First set for comparison. All the names logged, who has the evaluation form in the evaluation forms directory
 
         set_dict = set(self.__evaluation_data.keys())
 
-        #Second set from the "evaluators file". The file must be readed 
-        messagebox.showwarning('Aviso', 'Selecciona el archivo original de evaluadores.\n Verifica que corresponde con la fecha y los archivos que se están analizando \n Formato: yymmdd_evaluators.vX.csv')
+        thisdir = os.getcwd()
 
-        path_evaluators =filedialog.askopenfilename(title="Selecciona el archivo de evaluadores para comprobación:'yymmdd_evaluators.v_.csv", initialdir='./archivos', defaultextension='*.csv')
+        path_of_design = thisdir+'/archivos/0_Diseños de evaluación/'
+        rd_file = random.choice(list(set_dict)) #just obtain one person to extract file name
+        ev_directory = self.__evaluation_data[rd_file]['file_path'][0:len(thisdir+'/archivos/')+20]
+        directory_name =ev_directory[-20:]
+        path_evaluators = path_of_design + directory_name[0:6] + '_evaluators_v' + directory_name[-1:]+'.csv'
+
 
         row=[]
         with open(path_evaluators,'r',newline='', encoding='utf-8-sig') as editfile:
@@ -224,23 +232,35 @@ class EvaluationsAssessment:
         #Set from the logged dictionary should equal the list of collabs from the evaluator file
 
         if check_sets(set_dict, list_of_collabs):
-          print("Número de formularios: OK")
+          num_formulariosCheck = True
+          #num_formulariosCheck = "Número de formularios: OK"
         else:
-          print("El número de formularios no coincide con el plan")
+          num_formulariosCheck = False
+          #num_formulariosCheck = "El número de formularios no coincide con el plan"
 
         #print(len(set_dict - list_of_collabs))
 
         #Check that the results files are consistent with the archive of evaluators
+        problematic_evaluation = []
         inconsist = 0 
         for line in reading:
           if check_sets(set(line[1:]), set(self.__evaluation_data[line[0]]['evaluation_results'].columns)) == False:
             inconsist +=1
-            print(f'Revisar evaluación de {line[0]}')
+            diff = list(set(line[1:]) ^ set(self.__evaluation_data[line[0]]['evaluation_results'].columns))
+            for i in diff:
+              if i != 'Autoevaluación':
+                problematic_evaluation.append(i)
+
+            #problematic_evaluation.append(line[0])
 
         if inconsist != 0:
-          print(f'Hay una inconsistencia en {consist} archivos de evaluación')
+          evaluatorsCheck = False
+          #evaluatorsCheck= f'Hay una inconsistencia en {consist} archivos de evaluación'
         else:
-          print("Comprobación de evaluadores: OK")
+          evaluatorsCheck = True
+          #evaluatorsCheck = "Comprobación de evaluadores: OK"
+        
+        return num_formulariosCheck, evaluatorsCheck, problematic_evaluation
 
 
 

@@ -250,6 +250,7 @@ class Menu(Frame):
 
       last_ev = EvaluationsAssessment()
       last_ev.read_directories()  #reads the last evaluation data from the archivos directory
+      num_formatsCheck, num_evaluatorsCheck, problematicEvaluations = last_ev.checkplan()
       names= list(last_ev.evaluation_data.keys())
       date_of_evaluation = last_ev.evaluation_data[names[0]]['date']
 
@@ -275,9 +276,17 @@ class Menu(Frame):
       frame5.config(highlightcolor='black', highlightthickness=1)
 
 # First Frame includes checking of formats status and of evaluators
+      formatsCheck = 'Número de formularios: OK' if num_formatsCheck else 'El número de formularios no coincide con el plan'
+      evaluatorsCheck = 'Comprobación de evaluadores: OK' if num_evaluatorsCheck else f'Hay una inconsistencia en {len(problematicEvaluations)} archivos de evaluación'
 
       #we need date and checkings
       #1- FIND LAS EVALUATION
+      def see_inconsistencies():
+         if len(problematicEvaluations) == 0:
+            messagebox.showinfo('Aviso', 'Las evaluaciones parecen ajustarse a lo prediseñado')
+         else:
+            messagebox.showinfo('Verificar', f'Verifica las evalaciones de las siguientes personas \n{problematicEvaluations}\n')
+
 
       dateLabel = Label(frame1, text="Fecha de la evaluación:  ", font=('Open Sans', 12))
       dateLabel.grid(row=0, column=0)
@@ -287,7 +296,23 @@ class Menu(Frame):
 
       evDate = Label(frame1, text=date_of_evaluation.strftime('%d/%m/%Y'), font=('Open Sans', 12, 'bold'))
       evDate.grid(row=0, column=1)
-      
+
+      firstCheck = Label(frame1, text = formatsCheck)
+      firstCheck.grid(row=1,columnspan=2)
+      if num_formatsCheck:
+         firstCheck.config(font=('Open Sans', 12), fg='green')
+      else:
+         firstCheck.config(font=('Open Sans', 12, 'bold'), fg='red')
+
+      secondCheck = Label(frame1, text = evaluatorsCheck)
+      secondCheck.grid(row=2,column=0)
+      if num_evaluatorsCheck:
+         secondCheck.config(font=('Open Sans', 12), fg='green')
+      else:
+         secondCheck.config(font=('Open Sans', 12, 'bold'), fg='red')
+
+      seeProblems = Button(frame1, text='Verificar', command=see_inconsistencies)
+      seeProblems.grid(row=2, column= 1)
 
    #   
    #   #get the number of evaluators required

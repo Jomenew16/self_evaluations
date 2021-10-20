@@ -4,14 +4,14 @@ from Sim_company import *
 from Evaluations import *
 from tkinter import *
 
-def menu():
-    menu =int(input("""¿What do you want to do?:
-    1. Simulate a new company \n
-    2. Setup the team evaluations\n
-    3. Fill autoevaluations\n
-    4. Exit program\n"""))
-
-    return menu
+#def menu():
+#
+#   menu =int(input("""¿What do you want to do?:
+#   1. Simulate a new company \n
+#   2. Setup the team evaluations\n
+#   3. Fill autoevaluations\n
+#   4. Exit program\n"""))
+#   return menu
     
     
     #We will requests the data to set the matrix, read matrix, etc
@@ -23,8 +23,7 @@ def menu():
        #2.2 Evaluators of an employeer
        #2.3 set forms
      
-    pass
-
+ 
 
 if __name__ == '__main__':
 
@@ -48,9 +47,10 @@ if __name__ == '__main__':
 # -------------------- Evaluations side---------------------------------------
    
    def set_formats():
+      root.quit() 
       ev = Evaluation()
       ev.check_matrix()
-      root.quit()        
+       
    
    title_1 = Label(frame_left, text = "EVALUACIONES", font=("Open Sans", 12))
    title_1.pack(side='top', pady= 15, padx=10)   
@@ -76,10 +76,10 @@ if __name__ == '__main__':
 # -------------------- Simulations side---------------------------------------
 
    def newcompany():
-      #root.destroy()
+      root.quit() 
       Company = Sim_comp()
       Company.set_company()
-      root.quit()
+   #   root.quit()
       
    title_2 = Label(frame_right, text = "SIMULACIONES", font=("Open Sans", 12))
    title_2.pack(side='top', pady= 15, padx=10)   
