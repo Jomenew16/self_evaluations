@@ -262,10 +262,62 @@ class EvaluationsAssessment:
         
         return num_formulariosCheck, evaluatorsCheck, problematic_evaluation
 
+#----------------------------Submenu 1. Create first check stats and graphs---------------
 
+    def create_first_check_submenu_stats(self):
+      #Determinar el porcentaje de completos
+      completed = 0
+      semicompleted = 0
+      semiempties = 0
+      empties = 0
+      #compile de list of collaborators, to later build de graphs
+      colabs = []
+      pctg = [] 
 
-if __name__ == '__main__':
-    test = EvaluationsAssessment()
+      for j, k in self.__evaluation_data.items():
+        colabs.append(j)
+        pctg.append(k['completion'])
+        if k['completion'] == 0:
+          empties +=1
+        elif k['completion'] < 50:
+          semiempties +=1
+        elif k['completion'] < 100:
+          semicompleted +=1
+        else:
+          completed +=1
+
+      # pie graph with the formats that are completed, semicompleted, semiempties or empties
+      num_filled = [empties, semiempties, semicompleted, completed]
+      cat_filled = ['Vacíos', 'Semivacíos', 'Semicompletos', 'Completos']
+      colors = ['#FF0000','#FF9000','#C3DB0F','#62EF04']
+      offset = (0.1,0.1,0,0)
+      plt.figure(figsize=(2,2))
+      plt.pie(num_filled,labels = cat_filled, autopct="%0.1f %%",  colors = colors, explode = offset, textprops={'fontsize':6})
+      plt.axis("equal")
+      thispath = os.getcwd()
+
+      plt.savefig(thispath + '/archivos/1_archivos de trabajo/S1F2_pieCompletion.png', bbox_inches = 'tight')
+      
+      plt.clf()
+
+      sort_completion = pd.DataFrame(index= colabs)
+      sort_completion['Pct'] = pctg
+      sort_completion.sort_values('Pct', ascending=False, inplace=True)
+
+      #print(sort_completion.index)
+      plt.figure(figsize=(5,3))
+      plt.barh(sort_completion.index, sort_completion['Pct'], height=0.8, color = 'blue')
+      plt.xticks(fontsize=6)
+      plt.yticks(fontsize=6)
+      plt.xlabel("Porcentaje de cumplimentación")
+      #plt.ylabel("Colaboradores")
+      #plt.title("Porcentaje de avance")
+      plt.savefig(thispath + '/archivos/1_archivos de trabajo/S1F3_hbars_completion.png', bbox_inches = 'tight')
+      
+      plt.clf()
+
+#if __name__ == '__main__':
+ #   test = EvaluationsAssessment()
     #test.read_directories()
     #test.save_data()
-    test.read_data()
+  #  test.read_data()

@@ -7,6 +7,8 @@ from tkinter import font
 from Sim_company import *
 from Evaluations import *
 from tkinter import *
+import time
+from PIL import Image, ImageTk
 
 from assessments import EvaluationsAssessment
 
@@ -258,22 +260,33 @@ class Menu(Frame):
       total_width = self.master.winfo_screenwidth()
       total_height = self.master.winfo_screenheight()
 
-      submenu_title = Label(self.master, text='ESTATUS ÚLTIMA EVALUACIÓN', font = ("Open Sans", 15)).grid(row=0, columnspan=2)
-      frame1 = Frame(self.master, width= 600, height=500)
+      submenu_title = Label(self.master, text='ESTATUS ÚLTIMA EVALUACIÓN', font = ("Open Sans", 12)).grid(row=0, columnspan=2)
+      
+      frame1 = Frame(self.master)
       frame1.grid(row=1, column=0)
       frame1.config(highlightcolor='black', highlightthickness=1)
-      frame2 = Frame(self.master, width= total_width-700, height=500)
+      #frame1.config(bd=10)
+      #frame1.config(relief="ridge")
+      frame2 = Frame(self.master )
       frame2.grid(row=1, column=1)
       frame2.config(highlightcolor='black', highlightthickness=1)
-      frame3 = Frame(self.master, width= 800, height=total_height-500)
-      frame3.grid(row=2, column=0)
+      #frame2.config(bd=10)
+      #frame2.config(relief="ridge") 
+      frame3 = Frame(self.master )
+      frame3.grid(row=2, columnspan=2)
       frame3.config(highlightcolor='black', highlightthickness=1)
-      frame4 = Frame(self.master, width= total_width-800, height=total_height-500)
-      frame4.grid(row=2, column=1)
+      #frame3.config(bd=10)
+      #frame3.config(relief="ridge") 
+      frame4 = Frame(self.master )
+      frame4.grid(row=3, column=1)
       frame4.config(highlightcolor='black', highlightthickness=1)
-      frame5 = Frame(self.master, width= total_width, height=200)
+      #frame4.config(bd=10)
+      #frame4.config(relief="ridge") 
+      frame5 = Frame(self.master )
       frame5.grid(row=3, columnspan=2)
       frame5.config(highlightcolor='black', highlightthickness=1)
+      #frame5.config(bd=10)
+      #frame5.config(relief="ridge")
 
 # First Frame includes checking of formats status and of evaluators
       formatsCheck = 'Número de formularios: OK' if num_formatsCheck else 'El número de formularios no coincide con el plan'
@@ -288,31 +301,62 @@ class Menu(Frame):
             messagebox.showinfo('Verificar', f'Verifica las evalaciones de las siguientes personas \n{problematicEvaluations}\n')
 
 
-      dateLabel = Label(frame1, text="Fecha de la evaluación:  ", font=('Open Sans', 12))
-      dateLabel.grid(row=0, column=0)
+      dateLabel = Label(frame1, text="Fecha de la evaluación:  ", font=('Open Sans', 9))
+      dateLabel.grid(sticky='W', row=0, column=0)
       f = font.Font(dateLabel, dateLabel.cget("font"))
       f.configure(underline=True)
       dateLabel.configure(font = f)
 
-      evDate = Label(frame1, text=date_of_evaluation.strftime('%d/%m/%Y'), font=('Open Sans', 12, 'bold'))
-      evDate.grid(row=0, column=1)
+      evDate = Label(frame1, text=date_of_evaluation.strftime('%d/%m/%Y'), font=('Open Sans', 9, 'bold'))
+      evDate.grid(sticky='W', row=0, column=1)
 
       firstCheck = Label(frame1, text = formatsCheck)
-      firstCheck.grid(row=1,columnspan=2)
+      firstCheck.grid(sticky='W', row=1,columnspan=2)
       if num_formatsCheck:
-         firstCheck.config(font=('Open Sans', 12), fg='green')
+         firstCheck.config(font=('Open Sans', 9), fg='green')
       else:
-         firstCheck.config(font=('Open Sans', 12, 'bold'), fg='red')
+         firstCheck.config(font=('Open Sans', 9, 'bold'), fg='red')
 
       secondCheck = Label(frame1, text = evaluatorsCheck)
-      secondCheck.grid(row=2,column=0)
+      secondCheck.grid(sticky='W', row=2,column=0)
       if num_evaluatorsCheck:
-         secondCheck.config(font=('Open Sans', 12), fg='green')
+         secondCheck.config(font=('Open Sans', 9), fg='green')
       else:
-         secondCheck.config(font=('Open Sans', 12, 'bold'), fg='red')
+         secondCheck.config(font=('Open Sans', 9, 'bold'), fg='red')
 
       seeProblems = Button(frame1, text='Verificar', command=see_inconsistencies)
-      seeProblems.grid(row=2, column= 1)
+      seeProblems.grid(sticky='W', row=2, column= 1)
+
+   # Second Frame includes number of completed formats
+      last_ev.create_first_check_submenu_stats()
+
+      thispath = os.getcwd()
+      
+      S1F2_pie_img = PhotoImage(file = thispath + '/archivos/1_archivos de trabajo/S1F2_pieCompletion.png')
+      S1F2_pieGraphcompletion = Label(frame2, image= S1F2_pie_img)
+      S1F2_pieGraphcompletion.config(relief='ridge', borderwidth='2')
+      S1F2_pieGraphcompletion.image = S1F2_pie_img
+      S1F2_pieGraphcompletion.pack(side='top')
+
+      S1F3_hbar_img = PhotoImage(file = thispath + '/archivos/1_archivos de trabajo/S1F3_hbars_completion.png')
+      S1F3_hbar_completion = Label(frame3, image= S1F3_hbar_img)
+      S1F3_hbar_completion.config(relief='ridge', borderwidth='2')
+      S1F3_hbar_completion.image = S1F3_hbar_img
+      S1F3_hbar_completion.pack(side='left')
+   # Fith Frame includes return to menu Button, save and see statistics
+
+      def mainmenu():
+         frame1.destroy()
+         frame2.destroy()
+         frame3.destroy()
+         frame4.destroy()
+         frame5.destroy()
+         self.main_menu_widgets()
+
+      Button(frame5, text="Menú principal", command = mainmenu).grid(row=0, column=0)
+
+
+
 
    #   
    #   #get the number of evaluators required
@@ -397,6 +441,7 @@ if __name__ == '__main__':
 # Read menu
    root = Tk()
    
+   #root.config(bg='white')
    root.title("La voz del equipo")
    root.resizable(False, False)
    menu_app = Menu(master = root)
