@@ -19,6 +19,7 @@ class Menu(Frame):
        super().__init__(master)
        self.master = master
        self.first_try = True
+       self.thispath = os.getcwd()
        #self.first_try_comp = True
        #self.first_try_formats = True
 
@@ -260,7 +261,9 @@ class Menu(Frame):
       total_width = self.master.winfo_screenwidth()
       total_height = self.master.winfo_screenheight()
 
-      submenu_title = Label(self.master, text='ESTATUS ÚLTIMA EVALUACIÓN', font = ("Open Sans", 12)).grid(row=0, columnspan=2)
+      frame0 = Frame(self.master)
+      frame0.grid(row=0, columnspan=2)
+      submenu_title = Label(frame0, text='ESTATUS ÚLTIMA EVALUACIÓN', font = ("Open Sans", 12)).pack()
       
       frame1 = Frame(self.master)
       frame1.grid(row=1, column=0)
@@ -277,14 +280,14 @@ class Menu(Frame):
       frame3.config(highlightcolor='black', highlightthickness=1)
       #frame3.config(bd=10)
       #frame3.config(relief="ridge") 
-      frame4 = Frame(self.master )
-      frame4.grid(row=3, column=1)
-      frame4.config(highlightcolor='black', highlightthickness=1)
+      #frame4 = Frame(self.master )
+      #frame4.grid(row=3, column=1)
+      #frame4.config(highlightcolor='black', highlightthickness=1)
       #frame4.config(bd=10)
       #frame4.config(relief="ridge") 
-      frame5 = Frame(self.master )
-      frame5.grid(row=3, columnspan=2)
-      frame5.config(highlightcolor='black', highlightthickness=1)
+      frame4 = Frame(self.master )
+      frame4.grid(row=3, columnspan=2)
+      frame4.config(highlightcolor='black', highlightthickness=1)
       #frame5.config(bd=10)
       #frame5.config(relief="ridge")
 
@@ -330,109 +333,127 @@ class Menu(Frame):
    # Second Frame includes number of completed formats
       last_ev.create_first_check_submenu_stats()
 
-      thispath = os.getcwd()
+      #thispath = os.getcwd()
       
-      S1F2_pie_img = PhotoImage(file = thispath + '/archivos/1_archivos de trabajo/S1F2_pieCompletion.png')
+      S1F2_pie_img = PhotoImage(file = self.thispath + '/archivos/1_archivos de trabajo/S1F2_pieCompletion.png')
       S1F2_pieGraphcompletion = Label(frame2, image= S1F2_pie_img)
       S1F2_pieGraphcompletion.config(relief='ridge', borderwidth='2')
       S1F2_pieGraphcompletion.image = S1F2_pie_img
       S1F2_pieGraphcompletion.pack(side='top')
 
-      S1F3_hbar_img = PhotoImage(file = thispath + '/archivos/1_archivos de trabajo/S1F3_hbars_completion.png')
+
+   # Third Frame includes number of completed formats
+      S1F3_hbar_img = PhotoImage(file = self.thispath + '/archivos/1_archivos de trabajo/S1F3_hbars_completion.png')
       S1F3_hbar_completion = Label(frame3, image= S1F3_hbar_img)
       S1F3_hbar_completion.config(relief='ridge', borderwidth='2')
       S1F3_hbar_completion.image = S1F3_hbar_img
       S1F3_hbar_completion.pack(side='left')
-   # Fith Frame includes return to menu Button, save and see statistics
+   
+   
+   # Forth Frame includes return to menu Button, save and see statistics
 
       def mainmenu():
+         frame0.destroy()
          frame1.destroy()
          frame2.destroy()
          frame3.destroy()
          frame4.destroy()
-         frame5.destroy()
          self.main_menu_widgets()
 
-      Button(frame5, text="Menú principal", command = mainmenu).grid(row=0, column=0)
+      def globalstmenu():
+         frame0.destroy()
+         frame1.destroy()
+         frame2.destroy()
+         frame3.destroy()
+         frame4.destroy()
+         #guardar datos evaluación
+         last_ev.save_data()
+         self.global_stats_menu(date_of_evaluation, last_ev)
 
+      contBut = Button(frame4, text="Continuar", command = globalstmenu)
+      contBut.grid(row=0, column=0, padx=15)
 
+      backBut = Button(frame4, text="Menú principal", command = mainmenu)
+      backBut.grid(row=0, column=1)
 
-
-   #   
-   #   #get the number of evaluators required
-   #   sample_evaluators = 0
-   #   
-   #   num_evaluations = IntVar()
-   #   num_evaluations.set(7) 
-#
-   #   def destroy_formats_menu():
-   #      self.txLabel.destroy()
-   #      self.numEntry.destroy()
-   #      self.evButton.destroy()
-   #      self.evcancelButton.destroy()      
-   #   
-   #   def evaluators(event=None):
-#
-   #       try:    
-   #           sample_evaluators = num_evaluations.get()
-   #       except:
-   #           messagebox.showwarning('Aviso', 'Debes escoger un número entero')
-   #           
-   #       finally:
-   #           if isinstance(sample_evaluators, int):
-   #               if sample_evaluators >= 3:
-   #                   messagebox.showwarning('¡Excelente!', 'Selecciona a continuación el archivo con las interacciones')
-   #                   ev = Evaluation()
-   #                   ev.check_matrix(sample_evaluators)                      
-   #                   back_to_main()                
-   #               else:
-   #                   messagebox.showwarning('Aviso', 'Escoge al menos 3 evaluadores por colaborador')            
-   #                   self.first_try =False
-   #                   destroy_formats_menu()
-   #                   self.set_formats()
-   #                   #print("\nEscoge al menos 3 evaluadores por colaborador\n")
-   #           else:
-   #               sample_evaluators = 0
-   #               self.first_try =False
-   #               destroy_formats_menu()
-   #               self.set_formats() 
-   #       
-   #   def back_to_main ():
-   #       destroy_formats_menu()
-   #       self.first_try =True
-   #       self.main_menu_widgets()
+      ansevBut = Button(frame4, text="Ver evaluación anterior")
+      ansevBut.grid(row=0, column=2, padx = 5)
+      
    
-         
-   #   self.txLabel = Label(self.master, text="¿Cuántas evaluaciones se requieren por cada colaborador?")
-   #   self.txLabel.pack(side="top")
-   #   self.numEntry = Entry(self.master, textvariable = num_evaluations)
-   #   self.numEntry.pack(side='top')
-   #   self.evButton = Button(self.master, text="iniciar", command = evaluators)
-   #   self.evButton.focus()
-   #   self.evButton.bind('<Return>', evaluators)
-   #   self.evButton.pack(side='top')
-   #   self.evcancelButton = Button(self.master, text="Cancelar", command = back_to_main)
-   #   self.evcancelButton.pack(pady=10)
+   # -------------------- Global statistics menu ---------------------------------------------------
+
+   def global_stats_menu(self, date, eval_instance):
+      
+      frame1=Frame(self.master)
+      frame1.grid(row=0, column=0)
+
+      dateLabel = Label(frame1, text="Fecha: ", font=('Open Sans', 9))
+      dateLabel.grid(sticky='W', row=0, column=0)
+      f = font.Font(dateLabel, dateLabel.cget("font"))
+      f.configure(underline=True)
+      dateLabel.configure(font = f)
+
+      evDate = Label(frame1, text=date.strftime('%d/%m/%Y'), font=('Open Sans', 9))
+      evDate.grid(sticky='W', row=0, column=1)
+      evDate.config(bg='white')
+
+      submenu2_title = Label(frame1, text='RESULTADOS GENERALES', font = ("Open Sans", 10))
+      submenu2_title.grid(sticky='N',row=1, columnspan=2)
+      
+      frame2 = Frame(self.master)
+      frame2.grid(row=1,column=0)
+      frame2.config(highlightcolor='black', highlightthickness=1)
+
+      frame3 = Frame(self.master)
+      frame3.grid(row=2, column=0)
+      frame3.config(highlightcolor='black', highlightthickness=1)
+
+#include image of comparison between collaborators
+      eval_instance.create_second_allcollabs_submenu_stats()
+
+      S2F1_bar_img = PhotoImage(file = self.thispath + '/archivos/1_archivos de trabajo/S2F1_bar_allCollabs.png')
+      S2F1_bar_allCollabs = Label(frame2, image=S2F1_bar_img)
+      S2F1_bar_allCollabs.config(relief='ridge', borderwidth='4')
+      S2F1_bar_allCollabs.image = S2F1_bar_img
+      S2F1_bar_allCollabs.pack(side='top')
 
 
+      #S1F3_hbar_img = PhotoImage(file = self.thispath + '/archivos/1_archivos de trabajo/S1F3_hbars_completion.png')
+      #S1F3_hbar_completion = Label(frame3, image= S1F3_hbar_img)
+      #S1F3_hbar_completion.config(relief='ridge', borderwidth='2')
+      #S1F3_hbar_completion.image = S1F3_hbar_img
+      #S1F3_hbar_completion.pack(side='left')
+      #Final frame next options
 
-   # menu =int(input("""¿What do you want to do?:
-   # 1. Simulate a new company \n
-   # 2. Setup the team evaluations\n
-   # 3. Fill autoevaluations\n
-   # 4. Exit program\n"""))
-#
-   # return menu
-    
-    
-    #We will requests the data to set the matrix, read matrix, etc
-    #1 create matrix
-        #Data: number of employees
-    #2 read matrix
-    #3 New evaluation
-       #2.1 Evaluations by employee
-       #2.2 Evaluators of an employeer
-       #2.3 set forms
+      def backtomainmenu():
+         frame1.destroy()
+         frame2.destroy()
+         frame3.destroy()
+         self.main_menu_widgets()
+
+      def backtofirststats():
+         frame1.destroy()
+         frame2.destroy()
+         frame3.destroy()
+         self.menu_last_evaluation()
+
+      findCButton = Button(frame3, text = 'Ver colaborador')
+      findCButton.grid(row=0, column=0)
+
+      findDButton = Button(frame3, text = 'Ver departamento')
+      findDButton.grid(row=0, column=1, padx=5)
+
+      backButton =Button(frame3, text = 'Volver', command=backtofirststats)
+      backButton.grid(row=0, column=3, padx=10)
+
+      initButton = Button(frame3, text = 'Inicio', command = backtomainmenu)
+      initButton.grid(row=0, column=4)
+
+      
+
+
+   #   
+   # 
      
 
 

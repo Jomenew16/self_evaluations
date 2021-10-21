@@ -21,6 +21,7 @@ class EvaluationsAssessment:
     
     def __init__(self) -> None:
         self.__evaluation_data = {}
+        self.thispath = os.getcwd()
 
 #------------------------- General tools -------------------------------------------------------
 
@@ -121,6 +122,7 @@ class EvaluationsAssessment:
             
             k['full_columns'] = k['evaluation_results'].notna().sum() == 18
             k['use_columns'] = k['evaluation_results'].notna().sum() > 9
+            k['use_columns']['Autoevaluación'] = True  #even if blank selfevaluation must remain
             k['removed_evaluators'] = [x for x in k['use_columns'].keys() if k['use_columns'][x]==False]
             ev_df = k['evaluation_results'].loc[:,k['use_columns']]
             k['total_values'] = ev_df.size
@@ -135,11 +137,12 @@ class EvaluationsAssessment:
             check_mean['Autoevaluación'] = True #Autoevalución must remain even if out of range
             k['out_of_range_evaluations'] = [x for x in check_mean.keys() if check_mean[x]==False]
             [self.__evaluation_data[x]['out_of_range_evaluates'].append(j) for x in k['out_of_range_evaluations']]
+            ev_df=ev_df.loc[:,check_mean]
             #Include the questión categories in DataFrame for evaluation
             categories = ['Disposición', 'Disposición', 'Disposición', 'Propósito', 'Propósito', 'Colaboración', 'Colaboración', 'Colaboración', 'Colaboración', 'Desempeño', 'Desempeño', 'Desempeño', ' Crecimiento', 'Crecimiento','Proactividad','Proactividad','Proactividad','General']
             ev_df['categorías'] = categories
             #final DataFrame for evaluation
-            k['process_results'] = ev_df
+            k['process_results'] = ev_df.copy(deep=True)
 
 #       
 
@@ -175,9 +178,11 @@ class EvaluationsAssessment:
         saving_path = path_of_evaluations[:last_slash(path_of_evaluations)]
         ev_name_pkl = path_of_evaluations[last_slash(path_of_evaluations)+1:].removesuffix(filename)[:-1]
         
-        with open(saving_path+'/'+ev_name_pkl+'_pkl', 'wb') as fw:
+        with open(saving_path+'/1_archivos de trabajo/'+ev_name_pkl+'_pkl', 'wb') as fw:
           pickler = pickle.Pickler(fw)
           pickler.dump(self.__evaluation_data)
+    
+    
     
     def read_data(self): 
 
@@ -316,6 +321,29 @@ class EvaluationsAssessment:
       
       plt.clf()
 
+
+    def create_second_allcollabs_submenu_stats(self):
+
+      colabs_mean = []
+      colabs = []
+      for j, k in self.__evaluation_data.items():
+        collabs_df = k['process_results'].drop(['Autoevaluación'], axis=1).copy(deep=True)
+        print(collabs_df)
+        colabs_mean.append(collabs_df.mean().mean())
+        colabs.append(j)
+
+      sort_collabs = pd.DataFrame(index=colabs)
+      sort_collabs['means'] = colabs_mean
+      sort_collabs.sort_values('means', ascending=False, inplace=True)
+
+      plt.figure(figsize=(6,3))
+      plt.bar(sort_collabs.index, sort_collabs['means'], width=0.8)
+      plt.xticks(rotation=90, fontsize=7)
+      plt.yticks(rotation=90, fontsize=7)
+      plt.title('Media global por colaborador', fontdict={'fontsize': 11})
+      plt.savefig(self.thispath + '/archivos/1_archivos de trabajo/S2F1_bar_allCollabs.png', bbox_inches = 'tight')
+
+      
 #if __name__ == '__main__':
  #   test = EvaluationsAssessment()
     #test.read_directories()
