@@ -95,7 +95,8 @@ class EvaluationsAssessment:
              
 
 #Read the dictionaries and complete the main dictionary with degree of completion, the evaluators and the evaluations results
-
+        
+        
         for j, k in self.__evaluation_data.items():
           #Percentage of completion of each log file
             log_df = k['log_data'].copy(deep=True)
@@ -104,7 +105,7 @@ class EvaluationsAssessment:
             size = log_df.size
             k['completion'] = (size - num_na) / size * 100
             k['evaluation_results'].insert(0, 'Autoevaluación', list(k['log_data'][j + ' (Autoevaluación)']))
-            
+            #areas.append(k['area'])
 
             #k['evaluation_results']['Autoevaluación'] = list(k['log_data'][j + ' (Autoevaluación)'])
 
@@ -141,6 +142,8 @@ class EvaluationsAssessment:
             #Include the questión categories in DataFrame for evaluation
             categories = ['Disposición', 'Disposición', 'Disposición', 'Propósito', 'Propósito', 'Colaboración', 'Colaboración', 'Colaboración', 'Colaboración', 'Desempeño', 'Desempeño', 'Desempeño', ' Crecimiento', 'Crecimiento','Proactividad','Proactividad','Proactividad','General']
             ev_df['categorías'] = categories
+            
+            
             #final DataFrame for evaluation
             k['process_results'] = ev_df.copy(deep=True)
 
@@ -279,6 +282,7 @@ class EvaluationsAssessment:
       colabs = []
       pctg = [] 
 
+
       for j, k in self.__evaluation_data.items():
         colabs.append(j)
         pctg.append(k['completion'])
@@ -326,11 +330,24 @@ class EvaluationsAssessment:
 
       colabs_mean = []
       colabs = []
+      areas = []
+      categ_df = pd.DataFrame(index=range(8))
+      #columns=list(self.__evaluation_data.keys())
+      i=0
       for j, k in self.__evaluation_data.items():
         collabs_df = k['process_results'].drop(['Autoevaluación'], axis=1).copy(deep=True)
-        print(collabs_df)
+        if i==0:
+          categorias = collabs_df.groupby(['categorías']).mean().mean(axis=1).index
+        i += 1
+        categ_df[j]= list(collabs_df.groupby(['categorías']).median().median(axis=1))
+        
+        areas.append(k['area'])
+        #print(collabs_df)
         colabs_mean.append(collabs_df.mean().mean())
         colabs.append(j)
+        
+      
+
 
       sort_collabs = pd.DataFrame(index=colabs)
       sort_collabs['means'] = colabs_mean
@@ -338,12 +355,43 @@ class EvaluationsAssessment:
 
       plt.figure(figsize=(6,3))
       plt.bar(sort_collabs.index, sort_collabs['means'], width=0.8)
-      plt.xticks(rotation=90, fontsize=7)
-      plt.yticks(rotation=90, fontsize=7)
-      plt.title('Media global por colaborador', fontdict={'fontsize': 11})
+      plt.xticks(rotation=60, fontsize=7)
+      plt.yticks(fontsize=7)
+      plt.title('Media global por colaborador', fontdict={'fontsize': 9})
       plt.savefig(self.thispath + '/archivos/1_archivos de trabajo/S2F1_bar_allCollabs.png', bbox_inches = 'tight')
-
+      plt.clf()
       
+      sort_collabs['areas'] = areas
+
+      #average score by area
+      areas_df = sort_collabs.groupby(['areas']).mean()
+      areas_df.sort_values('means', ascending=False, inplace=True)
+      
+      plt.figure(figsize=(3,2))
+      plt.bar(areas_df.index, areas_df['means'], width=0.8)
+      plt.xticks(rotation=90, fontsize=6)
+      plt.yticks(fontsize=6)
+      plt.title('Desempeño por departamento', fontdict={'fontsize': 9})
+      #plt.show()
+      plt.savefig(self.thispath + '/archivos/1_archivos de trabajo/S2F2_bar_area.png', bbox_inches = 'tight')
+      plt.clf()
+
+      categ_df.set_index(categorias, inplace= True)
+      categ_dfmean =categ_df.mean(axis=1)
+      categ_sorted = categ_dfmean.sort_values(ascending=False)
+
+      plt.figure(figsize=(3,2))
+      plt.bar(categ_dfmean.index, categ_sorted.values, width=0.8)
+      plt.xticks(rotation=90, fontsize=6)
+      plt.yticks(fontsize=6)
+      plt.title('Desempeño global por categoría', fontdict={'fontsize': 9})
+      #plt.show()
+      plt.savefig(self.thispath + '/archivos/1_archivos de trabajo/S2F3_bar_category.png', bbox_inches = 'tight')
+      plt.clf()
+
+      #average score by category
+
+
 #if __name__ == '__main__':
  #   test = EvaluationsAssessment()
     #test.read_directories()

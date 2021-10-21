@@ -385,7 +385,7 @@ class Menu(Frame):
    def global_stats_menu(self, date, eval_instance):
       
       frame1=Frame(self.master)
-      frame1.grid(row=0, column=0)
+      frame1.grid(row=0, columnspan=3)
 
       dateLabel = Label(frame1, text="Fecha: ", font=('Open Sans', 9))
       dateLabel.grid(sticky='W', row=0, column=0)
@@ -405,17 +405,40 @@ class Menu(Frame):
       frame2.config(highlightcolor='black', highlightthickness=1)
 
       frame3 = Frame(self.master)
-      frame3.grid(row=2, column=0)
+      frame3.grid(row=1, column=1)
       frame3.config(highlightcolor='black', highlightthickness=1)
+
+      frame4 = Frame(self.master)
+      frame4.grid(row=1, column=2)
+      frame4.config(highlightcolor='black', highlightthickness=1)
+
+      frame5 = Frame(self.master)
+      frame5.grid(row=2, columnspan=3)
+      frame5.config(highlightcolor='black', highlightthickness=1)
 
 #include image of comparison between collaborators
       eval_instance.create_second_allcollabs_submenu_stats()
 
       S2F1_bar_img = PhotoImage(file = self.thispath + '/archivos/1_archivos de trabajo/S2F1_bar_allCollabs.png')
       S2F1_bar_allCollabs = Label(frame2, image=S2F1_bar_img)
-      S2F1_bar_allCollabs.config(relief='ridge', borderwidth='4')
+      S2F1_bar_allCollabs.config(relief='ridge', borderwidth='3')
       S2F1_bar_allCollabs.image = S2F1_bar_img
-      S2F1_bar_allCollabs.pack(side='top')
+      S2F1_bar_allCollabs.pack(side='left')
+      #S2F1_bar_allCollabs.grid(row=0, column=0)
+
+      S2F2_bar_img = PhotoImage(file = self.thispath + '/archivos/1_archivos de trabajo/S2F2_bar_area.png')
+      S2F2_bar_area = Label(frame3, image=S2F2_bar_img)
+      S2F2_bar_area.config(relief='ridge', borderwidth='3')
+      S2F2_bar_area.image = S2F2_bar_img
+      S2F2_bar_area.pack(side='top')
+      #S2F1_bar_allCollabs.grid(row=0, column=1)
+
+      S2F3_bar_img = PhotoImage(file = self.thispath + '/archivos/1_archivos de trabajo/S2F3_bar_category.png')
+      S2F3_bar_category = Label(frame4, image=S2F3_bar_img)
+      S2F3_bar_category.config(relief='ridge', borderwidth='3')
+      S2F3_bar_category.image = S2F3_bar_img
+      S2F3_bar_category.pack(side='top')
+      
 
 
       #S1F3_hbar_img = PhotoImage(file = self.thispath + '/archivos/1_archivos de trabajo/S1F3_hbars_completion.png')
@@ -429,24 +452,28 @@ class Menu(Frame):
          frame1.destroy()
          frame2.destroy()
          frame3.destroy()
+         frame4.destroy()
+         frame5.destroy()
          self.main_menu_widgets()
 
       def backtofirststats():
          frame1.destroy()
          frame2.destroy()
          frame3.destroy()
+         frame4.destroy()
+         frame5.destroy()
          self.menu_last_evaluation()
 
-      findCButton = Button(frame3, text = 'Ver colaborador')
+      findCButton = Button(frame5, text = 'Ver colaborador')
       findCButton.grid(row=0, column=0)
 
-      findDButton = Button(frame3, text = 'Ver departamento')
+      findDButton = Button(frame5, text = 'Ver departamento')
       findDButton.grid(row=0, column=1, padx=5)
 
-      backButton =Button(frame3, text = 'Volver', command=backtofirststats)
+      backButton =Button(frame5, text = 'Volver', command=backtofirststats)
       backButton.grid(row=0, column=3, padx=10)
 
-      initButton = Button(frame3, text = 'Inicio', command = backtomainmenu)
+      initButton = Button(frame5, text = 'Inicio', command = backtomainmenu)
       initButton.grid(row=0, column=4)
 
       

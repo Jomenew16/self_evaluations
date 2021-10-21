@@ -284,23 +284,22 @@ class Evaluation:
 
         #ranges of score
 
-        def score(empl_type, type):         
-            def wrapper():        
-
-                if type == 4:
-                    return random.randint(4,5)
-                elif type == 3:
-                    return random.randint(3,4)
-                elif type == 2:
-                    return random.randint(2,3)
-                elif type == 1:
-                    return random.randint(1,2)
-            return wrapper
+        def score(type):         
+            #def wrapper():        
+            if type == 4:
+                return random.randint(4,5)
+            elif type == 3:
+                return random.randint(3,4)
+            elif type == 2:
+                return random.randint(2,3)
+            elif type == 1:
+                return random.randint(1,2)
+            #return wrapper
 
         #randomly chooses a type of employee
         type_of_employee = random.choice(types_of_employees)
 
-        for i in range(1, 19):
+        for i in range(1, 19): #along the questions, the grades may change a step every 3-4 questions, depending on the general type of employee
             if i % 3 == 0 or i == 1:
                 if type_of_employee == "good":
                     type_range = random.randint(3,4)
@@ -308,8 +307,10 @@ class Evaluation:
                     type_range = random.randint(2,3)
                 else:
                     type_range = random.randint(1,2)       
-            results = score(type_of_employee, type_range)
-            grades.append(results())
+            
+            grades.append(score(type_range))
+            #results = score(type_of_employee, type_range)
+            #grades.append(results())
 
         return grades   
     
