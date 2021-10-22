@@ -15,6 +15,7 @@ from tkinter import *
 import glob
 from tkinter import messagebox
 import matplotlib.pyplot as plt
+import plotly.graph_objects as go
 from itertools import compress
 
 class EvaluationsAssessment:
@@ -344,7 +345,7 @@ class EvaluationsAssessment:
         areas.append(k['area'])
         #print(collabs_df)
         colabs_mean.append(collabs_df.mean().mean())
-        colabs.append(j)
+        colabs.append(j)  
         
       
 
@@ -357,7 +358,8 @@ class EvaluationsAssessment:
       plt.bar(sort_collabs.index, sort_collabs['means'], width=0.8)
       plt.xticks(rotation=60, fontsize=7)
       plt.yticks(fontsize=7)
-      plt.title('Media global por colaborador', fontdict={'fontsize': 9})
+      plt.ylim(1,5)
+      plt.title('Media por colaborador', fontdict={'fontsize': 9})
       plt.savefig(self.thispath + '/archivos/1_archivos de trabajo/S2F1_bar_allCollabs.png', bbox_inches = 'tight')
       plt.clf()
       
@@ -368,9 +370,10 @@ class EvaluationsAssessment:
       areas_df.sort_values('means', ascending=False, inplace=True)
       
       plt.figure(figsize=(3,2))
-      plt.bar(areas_df.index, areas_df['means'], width=0.8)
+      plt.bar(areas_df.index, areas_df['means'], width=0.8, color = '#FFB85C')
       plt.xticks(rotation=90, fontsize=6)
       plt.yticks(fontsize=6)
+      plt.ylim(1,5)
       plt.title('Desempeño por departamento', fontdict={'fontsize': 9})
       #plt.show()
       plt.savefig(self.thispath + '/archivos/1_archivos de trabajo/S2F2_bar_area.png', bbox_inches = 'tight')
@@ -380,12 +383,16 @@ class EvaluationsAssessment:
       categ_dfmean =categ_df.mean(axis=1)
       categ_sorted = categ_dfmean.sort_values(ascending=False)
 
-      plt.figure(figsize=(3,2))
-      plt.bar(categ_dfmean.index, categ_sorted.values, width=0.8)
-      plt.xticks(rotation=90, fontsize=6)
-      plt.yticks(fontsize=6)
+      
+      plt.figure(figsize=(3,3))
+
+      #label_loc = np.linspace(start=0, stop=2 * np.pi, num=len(categ_dfmean.index))
+      plt.bar(categ_sorted.index, categ_sorted, width=0.8, color='#6A1B9A')
+      plt.xticks(rotation = 90, fontsize=6)
+      plt.yticks(fontsize=5)
+      plt.ylim(1,5)
       plt.title('Desempeño global por categoría', fontdict={'fontsize': 9})
-      #plt.show()
+      ##plt.show()
       plt.savefig(self.thispath + '/archivos/1_archivos de trabajo/S2F3_bar_category.png', bbox_inches = 'tight')
       plt.clf()
 

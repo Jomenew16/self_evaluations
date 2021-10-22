@@ -4,9 +4,12 @@ from datetime import date
 from datetime import datetime
 from random import sample
 from tkinter import font
+
+from matplotlib.pyplot import title
 from Sim_company import *
 from Evaluations import *
 from tkinter import *
+from tkinter import ttk
 import time
 from PIL import Image, ImageTk
 
@@ -424,21 +427,20 @@ class Menu(Frame):
       S2F1_bar_allCollabs.config(relief='ridge', borderwidth='3')
       S2F1_bar_allCollabs.image = S2F1_bar_img
       S2F1_bar_allCollabs.pack(side='left')
-      #S2F1_bar_allCollabs.grid(row=0, column=0)
-
-      S2F2_bar_img = PhotoImage(file = self.thispath + '/archivos/1_archivos de trabajo/S2F2_bar_area.png')
-      S2F2_bar_area = Label(frame3, image=S2F2_bar_img)
-      S2F2_bar_area.config(relief='ridge', borderwidth='3')
-      S2F2_bar_area.image = S2F2_bar_img
-      S2F2_bar_area.pack(side='top')
-      #S2F1_bar_allCollabs.grid(row=0, column=1)
+      #S2F1_bar_allCollabs.grid(row=0, column=0)   
 
       S2F3_bar_img = PhotoImage(file = self.thispath + '/archivos/1_archivos de trabajo/S2F3_bar_category.png')
-      S2F3_bar_category = Label(frame4, image=S2F3_bar_img)
+      S2F3_bar_category = Label(frame3, image=S2F3_bar_img)
       S2F3_bar_category.config(relief='ridge', borderwidth='3')
       S2F3_bar_category.image = S2F3_bar_img
       S2F3_bar_category.pack(side='top')
       
+      S2F2_bar_img = PhotoImage(file = self.thispath + '/archivos/1_archivos de trabajo/S2F2_bar_area.png')
+      S2F2_bar_area = Label(frame4, image=S2F2_bar_img)
+      S2F2_bar_area.config(relief='ridge', borderwidth='3')
+      S2F2_bar_area.image = S2F2_bar_img
+      S2F2_bar_area.pack(side='top')
+      #S2F1_bar_allCollabs.grid(row=0, column=1)
 
 
       #S1F3_hbar_img = PhotoImage(file = self.thispath + '/archivos/1_archivos de trabajo/S1F3_hbars_completion.png')
@@ -464,7 +466,15 @@ class Menu(Frame):
          frame5.destroy()
          self.menu_last_evaluation()
 
-      findCButton = Button(frame5, text = 'Ver colaborador')
+      def collab_menu():
+         frame1.destroy()
+         frame2.destroy()
+         frame3.destroy()
+         frame4.destroy()
+         frame5.destroy()
+         self.menu_collaborator_first_submenu(date, eval_instance)
+
+      findCButton = Button(frame5, text = 'Ver colaborador', command= collab_menu)
       findCButton.grid(row=0, column=0)
 
       findDButton = Button(frame5, text = 'Ver departamento')
@@ -476,13 +486,83 @@ class Menu(Frame):
       initButton = Button(frame5, text = 'Inicio', command = backtomainmenu)
       initButton.grid(row=0, column=4)
 
-      
 
+   # -------------------- Subm3 - Collaborator statistics ---------------------------------------------------
+
+   def menu_collaborator_first_submenu(self, date, eval_instance):
+
+      #Set date and a selection combo box and button to select the collaborator
+      frame1=Frame(self.master)
+      frame1.grid(row=0, columnspan=2)
+
+      frame2 = Frame(self.master) # categories chart
+      frame2.grid(row=1, column=0)
+
+      frame3 = Frame(self.master) # evaluation results
+      frame2.grid(row=1, column=1)
+
+      frame4 = Frame(self.master) # bottom menu
+      frame4.grid(row=2, columnspan=2)
+
+
+      evDate = Label(frame1, text=date.strftime('%d/%m/%Y'), font=('Open Sans', 9))
+      evDate.grid(sticky='W', row=0, column=0, padx=10)
+      evDate.config(bg='white')
+
+      selectLable = Label(frame1, text = "Selecciona colaborador:")
+      selectLable.grid(sticky='E', row=0, column=1)
+
+      #combo box and selection of collaborator
+      
+      #list of collaborators
+      collabs = list(eval_instance.evaluation_data.keys())  #list of collaborators, in case we need them for combo box
+      collab = StringVar()
+      collab.set(collabs[0])
+
+      
+      comboCollabs = ttk.Combobox(frame1, state='readonly', textvariable=collab) #
+      comboCollabs['values'] = collabs
+      comboCollabs.grid(sticky='W', row=0, column=2)
+        
+      confirmBut = Button(frame1, text = "Ver evaluación")
+      confirmBut.grid(sticky='W', row=0, column=3, padx=10)
 
    #   
-   # 
-     
+      def backtomainmenu():
+         frame1.destroy()
+         frame2.destroy()
+         frame3.destroy()
+         frame4.destroy()
+         self.main_menu_widgets()
 
+      def backtogeneralstats():
+         frame1.destroy()
+         frame2.destroy()
+         frame3.destroy()
+         frame4.destroy()
+         self.global_stats_menu(date, eval_instance)
+
+      def evolution_menu():
+         frame1.destroy()
+         frame2.destroy()
+         frame3.destroy()
+         frame4.destroy()
+         self.menu_collaborator_evolution_submenu(date, eval_instance)
+
+      findCButton = Button(frame4, text = 'Ver evolución', command= evolution_menu)
+      findCButton.grid(row=0, column=0)
+
+      findDButton = Button(frame4, text = 'Ver departamento')
+      findDButton.grid(row=0, column=1, padx=5)
+
+      backButton =Button(frame4, text = 'Volver', command=backtogeneralstats)
+      backButton.grid(row=0, column=2, padx=10)
+
+      initButton = Button(frame4, text = 'Inicio', command = backtomainmenu)
+      initButton.grid(row=0, column=3) 
+     
+   def menu_collaborator_evolution_submenu(self, date, eval_instance):
+      pass
 
 if __name__ == '__main__':
 
