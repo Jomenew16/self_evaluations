@@ -518,16 +518,33 @@ class Menu(Frame):
       collabs = list(eval_instance.evaluation_data.keys())  #list of collaborators, in case we need them for combo box
       collab = StringVar()
       collab.set(collabs[0])
+      #collaborator: str
+      
 
       
+      def collab_statistics():
+         #global collaborator 
+         collaborator = collab.get()
+         eval_instance.create_collaborator_submenu_stats(collaborator) 
+
+
       comboCollabs = ttk.Combobox(frame1, state='readonly', textvariable=collab) #
       comboCollabs['values'] = collabs
       comboCollabs.grid(sticky='W', row=0, column=2)
         
-      confirmBut = Button(frame1, text = "Ver evaluación")
+      confirmBut = Button(frame1, text = "Ver evaluación", command=collab_statistics)
       confirmBut.grid(sticky='W', row=0, column=3, padx=10)
 
-   #   
+      #----------------------------- 2nd and 3rd frames with the collaborator charts--------------------
+
+      S3F2_radar_img = PhotoImage(file = self.thispath + '/archivos/1_archivos de trabajo/S2F2_radar_category.png')
+      S3F2_radar_categ = Label(frame2, image=S3F2_radar_img)
+      S3F2_radar_categ.config(relief='ridge', borderwidth='3')
+      S3F2_radar_categ.image = S3F2_radar_img
+      S3F2_radar_categ.pack(side='top')
+
+
+   #      
       def backtomainmenu():
          frame1.destroy()
          frame2.destroy()
