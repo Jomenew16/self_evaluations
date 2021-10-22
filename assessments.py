@@ -405,29 +405,33 @@ class EvaluationsAssessment:
       #print(categorias)
       self_evalution_df = results[['Autoevaluación','categorías']]
       self_evaluation_by_catg_df = self_evalution_df.groupby(['categorías']).mean()
+      self_evaluation_by_catg = self_evaluation_by_catg_df
+      self_evaluation_by_catg = [*self_evaluation_by_catg, self_evaluation_by_catg[0]]
       
       #print(self_evaluation_by_catg_df) 
 
       allcolabs_df  = results.drop(['Autoevaluación'], axis=1)
       allcolabs_by_catg_df = allcolabs_df.groupby(['categorías']).mean().mean(axis=1)
-      
+      allcolabs_by_catg = allcolabs_by_catg_df
+      allcolabs_by_catg =[*allcolabs_by_catg, allcolabs_by_catg[0]]
+
       #print(allcolabs_by_catg_df)
 
       categories = list(allcolabs_by_catg_df.keys())
-
+      categories =[*categories, categories[0]]
       #print(categories)
 
       label_loc = np.linspace(start=0, stop=2 * np.pi, num=len(categories))
       
       plt.figure(figsize=(5,5))
       plt.subplot(polar=True)
-      plt.plot(label_loc, self_evaluation_by_catg_df, label = "Autoevalución")
-      plt.plot(label_loc, allcolabs_by_catg_df, label = "Evaluación")
+      plt.plot(label_loc, self_evaluation_by_catg, label = "Autoevaluación")
+      plt.plot(label_loc, allcolabs_by_catg, label = "Evaluación")
       plt.title('Áreas de mejora')
       lines, labels = plt.thetagrids(np.degrees(label_loc), labels=categories)
       plt.legend()
       plt.savefig(self.thispath + '/archivos/1_archivos de trabajo/S2F2_radar_category.png', bbox_inches = 'tight')
-      
+      plt.clf()
       
       #plt.bar(categ_sorted.index, categ_sorted, width=0.8, color='#6A1B9A')
       #plt.xticks(rotation = 90, fontsize=6)
