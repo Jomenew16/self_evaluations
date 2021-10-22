@@ -499,7 +499,7 @@ class Menu(Frame):
       frame2.grid(row=1, column=0)
 
       frame3 = Frame(self.master) # evaluation results
-      frame2.grid(row=1, column=1)
+      frame3.grid(row=1, column=1)
 
       frame4 = Frame(self.master) # bottom menu
       frame4.grid(row=2, columnspan=2)
@@ -520,12 +520,14 @@ class Menu(Frame):
       collab.set(collabs[0])
       #collaborator: str
       
-
+      
       
       def collab_statistics():
          #global collaborator 
          collaborator = collab.get()
-         eval_instance.create_collaborator_submenu_stats(collaborator) 
+         
+         eval_instance.create_collaborator_submenu_stats(collaborator)
+         set_charts() 
 
 
       comboCollabs = ttk.Combobox(frame1, state='readonly', textvariable=collab) #
@@ -536,12 +538,21 @@ class Menu(Frame):
       confirmBut.grid(sticky='W', row=0, column=3, padx=10)
 
       #----------------------------- 2nd and 3rd frames with the collaborator charts--------------------
+      chart_set = False
 
-      S3F2_radar_img = PhotoImage(file = self.thispath + '/archivos/1_archivos de trabajo/S2F2_radar_category.png')
-      S3F2_radar_categ = Label(frame2, image=S3F2_radar_img)
-      S3F2_radar_categ.config(relief='ridge', borderwidth='3')
-      S3F2_radar_categ.image = S3F2_radar_img
-      S3F2_radar_categ.pack(side='top')
+      def set_charts():
+         for widget in frame2.winfo_children():
+            widget.destroy()
+         #if chart_set:
+         #   frame2.destroy()
+         #   frame2 = Frame(self.master) # categories chart
+         #   frame2.grid(row=1, column=0)
+         S3F2_radar_img = PhotoImage(file = self.thispath + '/archivos/1_archivos de trabajo/S2F2_radar_category.png')
+         S3F2_radar_categ = Label(frame2, image=S3F2_radar_img)
+         S3F2_radar_categ.config(relief='ridge', borderwidth='3')
+         S3F2_radar_categ.image = S3F2_radar_img
+         S3F2_radar_categ.pack(side='top')
+         
 
 
    #      
