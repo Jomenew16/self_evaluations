@@ -39,7 +39,7 @@ class EvaluationsAssessment:
     #  return file_path.removesuffix(file_name)
 #---------------------------------Read the last evaluation in the archivos directory------------------
     
-    def read_directories(self):
+    def read_directories(self, ev_tolerance: float = 0.3):
         #print("aquí tamos")
         #read the last evaluation directory from /archivos
           
@@ -90,7 +90,9 @@ class EvaluationsAssessment:
               'autofilled_NA': 0,
               'total_values': 0,
               'out_of_range_evaluations': [],
-              'out_of_range_evaluates': []
+              'out_of_range_evaluates': [],
+              'global evaluation': 0.0,
+              'overall evaluation': 0.0 # calculated according to the last overall question
           }
 
              
@@ -135,7 +137,7 @@ class EvaluationsAssessment:
             #check and remove out of range evaluators. In principle, 25% of sensibility (then, in may be a chosen option)
             df_mean = ev_df.mean().mean()
             evaluators_mean = ev_df.mean()
-            check_mean = (evaluators_mean > df_mean - (0.25*df_mean)) & (evaluators_mean < df_mean + (0.25*df_mean))
+            check_mean = (evaluators_mean > df_mean - (ev_tolerance*df_mean)) & (evaluators_mean < df_mean + (ev_tolerance*df_mean))
             check_mean['Autoevaluación'] = True #Autoevalución must remain even if out of range
             k['out_of_range_evaluations'] = [x for x in check_mean.keys() if check_mean[x]==False]
             [self.__evaluation_data[x]['out_of_range_evaluates'].append(j) for x in k['out_of_range_evaluations']]
@@ -409,6 +411,10 @@ class EvaluationsAssessment:
       
 
       allcolabs_df  = results.drop(['Autoevaluación'], axis=1)
+      self.__evaluation_data[collab]['global evaluation'] = allcolabs_df.mean().mean()
+      self.__evaluation_data[collab]['overall evaluation'] = allcolabs_df.iloc[-1:,:].mean(axis=1).mean()
+      #print('global evaluation' + str(self.__evaluation_data['global evaluation']))
+      #print('overall evaluation' + str(self.__evaluation_data['overall evaluation']))
       allcolabs_by_catg_df = allcolabs_df.groupby(['categorías']).mean().mean(axis=1).to_frame()
       allcolabs_by_catg_df = allcolabs_by_catg_df.append(allcolabs_by_catg_df.iloc[0,:])
       
@@ -416,16 +422,42 @@ class EvaluationsAssessment:
   
       label_loc = np.linspace(start=0, stop=2 * np.pi, num=len(categories))
      
+     
       plt.figure(figsize=(5,5))
       plt.subplot(polar=True)
-      plt.plot(label_loc, self_evaluation_by_catg_df.iloc[:,0], label = "Autoevaluación")
       plt.plot(label_loc, allcolabs_by_catg_df.iloc[:,0], label = "Evaluación")
-      plt.title('Áreas de mejora')
+      plt.plot(label_loc, self_evaluation_by_catg_df.iloc[:,0], label = "Autoevaluación")
+      plt.title('Áreas de mejora', fontdict={'fontsize': 9})
       lines, labels = plt.thetagrids(np.degrees(label_loc), labels=categories)
-      plt.legend()
+      plt.xticks(fontsize=7)
+      plt.yticks(fontsize=7)
+      plt.legend(loc='best', fontsize=7)
       plt.savefig(self.thispath + '/archivos/1_archivos de trabajo/S2F2_radar_category.png', bbox_inches = 'tight')
       plt.clf()
       
+      collabs_questions_df = allcolabs_df.mean(axis=1).iloc[::-1]
+      #print(collabs_questions_df)
+      self_questions_df = self_evalution_df.drop(['categorías'], axis=1).iloc[::-1]
+      #print(self_questions_df)
+
+      num_questions = len(collabs_questions_df.index)
+      #print('número preguntas' + str(num_questions))
+      bar_index = np.arange(num_questions)
+      bar_width = 0.4
+      def shorten_questions(x):
+        return x[:30]+'...'
+
+
+      plt.figure(figsize=(6,5))
+      plt.barh(bar_index, collabs_questions_df, height= bar_width, label='evaluación')
+      plt.barh(bar_index + bar_width, self_questions_df.iloc[:,0], height=bar_width, label='autoevaluación')
+      plt.legend(loc='best', fontsize = 6)
+      plt.yticks(bar_index+bar_width, collabs_questions_df.index.map(shorten_questions), fontsize= 7)
+      plt.xticks(fontsize= 6)
+      plt.title('Detalle de evaluación por preguntas', fontdict={'fontsize': 9})
+      plt.savefig(self.thispath + '/archivos/1_archivos de trabajo/S2F3_questions_evaluation.png', bbox_inches = 'tight')
+      plt.clf
+
       #plt.bar(categ_sorted.index, categ_sorted, width=0.8, color='#6A1B9A')
       #plt.xticks(rotation = 90, fontsize=6)
       #plt.yticks(fontsize=5)
@@ -435,10 +467,28 @@ class EvaluationsAssessment:
       #plt.savefig(self.thispath + '/archivos/1_archivos de trabajo/S2F3_bar_category.png', bbox_inches = 'tight')
       #plt.clf()
 
+#----------------------------Submenu 4. Collab evaluation details---------------
+    def collaborator_subsubmenu_details(self, collab):
+      print('He llegado')  
+      out_of_range = len(self.__evaluation_data[collab]['out_of_range_evaluations'])
+      incomplete = len(self.__evaluation_data[collab]['full_columns']) - len(self.__evaluation_data[collab]['use_columns'])
+      valid = len(self.__evaluation_data[collab]['evaluators']) - out_of_range - incomplete
 
+      range_values = [out_of_range, incomplete, valid]
+      col_labels = ['Fuera de rango', 'incompletas', 'válidas']
+      colors = ['#FF0000', '#b24e0c','#62EF04']
+      offset = (0, 0, 0.1)
 
+      print(range_values)
+      def abs_value_range (val):
+         a  = round(val/100*(out_of_range + incomplete +valid), 0)
+         return a
 
-
+      plt.figure(figsize=(4,4))
+      plt.pie(range_values ,labels = col_labels, autopct= abs_value_range,  colors = colors, explode = offset)
+      plt.axis("equal")
+      plt.savefig(self.thispath + '/archivos/1_archivos de trabajo/S4F2_valid_evaluations_pie.png', bbox_inches = 'tight')
+      plt.clf()
 #if __name__ == '__main__':
  #   test = EvaluationsAssessment()
     #test.read_directories()

@@ -504,6 +504,9 @@ class Menu(Frame):
       frame4 = Frame(self.master) # bottom menu
       frame4.grid(row=2, columnspan=2)
 
+      frame5 = Frame(self.master) # bottom menu
+      frame5.grid(row=3, columnspan=2)
+
 
       evDate = Label(frame1, text=date.strftime('%d/%m/%Y'), font=('Open Sans', 9))
       evDate.grid(sticky='W', row=0, column=0, padx=10)
@@ -543,24 +546,77 @@ class Menu(Frame):
       def set_charts():
          for widget in frame2.winfo_children():
             widget.destroy()
-         #if chart_set:
-         #   frame2.destroy()
-         #   frame2 = Frame(self.master) # categories chart
-         #   frame2.grid(row=1, column=0)
+         for widget in frame3.winfo_children():
+            widget.destroy()
+         for widget in frame4.winfo_children():
+            widget.destroy()
+         
          S3F2_radar_img = PhotoImage(file = self.thispath + '/archivos/1_archivos de trabajo/S2F2_radar_category.png')
          S3F2_radar_categ = Label(frame2, image=S3F2_radar_img)
          S3F2_radar_categ.config(relief='ridge', borderwidth='3')
          S3F2_radar_categ.image = S3F2_radar_img
-         S3F2_radar_categ.pack(side='top')
+         S3F2_radar_categ.grid(row=0, columnspan=2)
+
+         S3F3_questionsbar_img = PhotoImage(file = self.thispath + '/archivos/1_archivos de trabajo/S2F3_questions_evaluation.png')
+         S3F3_questionsbar = Label(frame3, image=S3F3_questionsbar_img)
+         S3F3_questionsbar.config(relief='ridge', borderwidth='3')
+         S3F3_questionsbar.image = S3F3_questionsbar_img
+         S3F3_questionsbar.grid(row=0, columnspan=2)
+         #S3F3_questionsbar.pack(side='top')
+
+         # Detail of the questions ratios. First, include the general results
+         detail_quests_Label = Label(frame3, text='Detalles')
+         detail_quests_Label.grid(row=1, column=0)
          
+         detail_quests_Button = Button(frame3, text='Ver más')
+         detail_quests_Button.grid(row=1, column=1)
+
+   #---------------- FRAME 4. SUMMARY and EVALUATION STATS-----------------------------------------------
+         def qualification(x):
+            if x < 2.9:
+               return 'Necesita mejorar'
+            elif x <= 3.4:
+               return 'Normal'
+            elif x <= 4.2:
+               return 'Bueno'
+            else:
+               return 'Excelente'
+
+         global_qual= eval_instance.evaluation_data[collab.get()]['global evaluation']
+         overall_qual= eval_instance.evaluation_data[collab.get()]['overall evaluation']
+         #print(global_qual)
+         #print(overall_qual)
+
+         global_ev_mean = Label(frame4, text = 'Desempeño promedio: ' + qualification(global_qual) + f' ({str(round(global_qual,1))})', font=('Open Sans', 9, 'bold'))
+         global_ev_mean.grid(row=0, column=0, padx=15)
+
+         global_ev_overall = Label(frame4, text = 'Desempeño cualitativo: ' + qualification(overall_qual) + f' ({str(round(overall_qual,1))})', font=('Open Sans', 9, 'bold'))
+         global_ev_overall.grid(row=0, column=1, padx=15)
+
+         # Details on the evaluation
+
+         ev_details = Label(frame4, text = 'Detalles y rangos de evaluación', font=('Open Sans', 9))
+         ev_details.grid(row=1, column=0, pady=10, sticky='N')
+
+         def menu_details():
+            frame1.destroy()
+            frame2.destroy()
+            frame3.destroy()
+            frame4.destroy()
+            frame5.destroy()
+            self.menu_details_evaluation(date, eval_instance, collab.get())
+
+         ev_detailsButton = Button(frame4, text = 'Ver detalles', command= menu_details)
+         ev_detailsButton.grid(row=1, column=1, sticky='W')
 
 
-   #      
+   #---------------- FRAME 5. NAVIGATION------------------------------------------      
       def backtomainmenu():
          frame1.destroy()
          frame2.destroy()
          frame3.destroy()
          frame4.destroy()
+         frame5.destroy()
          self.main_menu_widgets()
 
       def backtogeneralstats():
@@ -568,6 +624,7 @@ class Menu(Frame):
          frame2.destroy()
          frame3.destroy()
          frame4.destroy()
+         frame5.destroy()
          self.global_stats_menu(date, eval_instance)
 
       def evolution_menu():
@@ -575,20 +632,74 @@ class Menu(Frame):
          frame2.destroy()
          frame3.destroy()
          frame4.destroy()
+         frame5.destroy()
          self.menu_collaborator_evolution_submenu(date, eval_instance)
 
-      findCButton = Button(frame4, text = 'Ver evolución', command= evolution_menu)
+      findCButton = Button(frame5, text = 'Ver evolución', command= evolution_menu)
       findCButton.grid(row=0, column=0)
 
-      findDButton = Button(frame4, text = 'Ver departamento')
+      findDButton = Button(frame5, text = 'Ver departamento')
       findDButton.grid(row=0, column=1, padx=5)
 
-      backButton =Button(frame4, text = 'Volver', command=backtogeneralstats)
+      backButton =Button(frame5, text = 'Volver', command=backtogeneralstats)
       backButton.grid(row=0, column=2, padx=10)
 
-      initButton = Button(frame4, text = 'Inicio', command = backtomainmenu)
+      initButton = Button(frame5, text = 'Inicio', command = backtomainmenu)
       initButton.grid(row=0, column=3) 
-     
+
+
+# -------------------- Subm4 - Collaborator statistics ---------------------------------------------------
+   
+   def menu_details_evaluation (self, date, eval_instance, collaborator):
+
+      #Set date and a selection combo box and button to select the collaborator
+      frame1=Frame(self.master)
+      frame1.grid(row=0, columnspan=2)
+
+      frame2 = Frame(self.master) # categories chart
+      frame2.grid(row=1, column=0)
+
+      frame3 = Frame(self.master) # categories chart
+      frame3.grid(row=2, column=0)
+
+      evDate = Label(frame1, text=date.strftime('%d/%m/%Y'), font=('Open Sans', 9))
+      evDate.grid(sticky='W', row=0, column=0, padx=10)
+      evDate.config(bg='white')
+
+      collabLabel = Label(frame1, text = collaborator.upper(), font=('Open Sans', 10, 'bold'))
+      collabLabel.grid(sticky='E', row=0, column=1)
+
+      #create pie charts with valid evaluations
+      eval_instance.collaborator_subsubmenu_details(collaborator)
+
+      S4F2_pieEvaluations_img = PhotoImage(file = self.thispath + '/archivos/1_archivos de trabajo/S4F2_valid_evaluations_pie.png')
+      S4F2_pieEvaluations = Label(frame2, image=S4F2_pieEvaluations_img)
+      S4F2_pieEvaluations.config(relief='ridge', borderwidth='3')
+      S4F2_pieEvaluations.image = S4F2_pieEvaluations_img
+      S4F2_pieEvaluations.grid(row=0, column=0)
+
+
+      def backtomainmenu():
+         frame1.destroy()
+         frame2.destroy()
+         frame3.destroy()
+         self.main_menu_widgets()
+
+      def backtocollabstats():
+         frame1.destroy()
+         frame2.destroy()
+         frame3.destroy()
+         self.menu_collaborator_first_submenu(date, eval_instance)
+      
+      backButton =Button(frame3, text = 'Volver', command=backtocollabstats)
+      backButton.grid(row=0, column=2, padx=10)
+
+      initButton = Button(frame3, text = 'Inicio', command = backtomainmenu)
+      initButton.grid(row=0, column=3) 
+
+
+# -------------------- Subm5 - Collaborator statistics ---------------------------------------------------
+
    def menu_collaborator_evolution_submenu(self, date, eval_instance):
       pass
 
