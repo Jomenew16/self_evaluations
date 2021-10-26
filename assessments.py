@@ -15,6 +15,7 @@ from tkinter import *
 import glob
 from tkinter import messagebox
 import matplotlib.pyplot as plt
+import seaborn as sb
 import plotly.graph_objects as go
 from itertools import compress
 
@@ -23,6 +24,8 @@ class EvaluationsAssessment:
     def __init__(self) -> None:
         self.__evaluation_data = {}
         self.thispath = os.getcwd()
+        self.areas = []
+        self.categorias = ['Disposición', 'Propósito', 'Colaboración','Desempeño', 'Crecimiento','Proactividad','General']
 
 #------------------------- General tools -------------------------------------------------------
 
@@ -110,6 +113,10 @@ class EvaluationsAssessment:
             k['completion'] = (size - num_na) / size * 100
             k['evaluation_results'].insert(0, 'Autoevaluación', list(k['log_data'][j + ' (Autoevaluación)']))
             #areas.append(k['area'])
+            if k['area'] not in self.areas:
+              self.areas.append(k['area'])
+            
+            
 
             #k['evaluation_results']['Autoevaluación'] = list(k['log_data'][j + ' (Autoevaluación)'])
 
@@ -144,7 +151,7 @@ class EvaluationsAssessment:
             [self.__evaluation_data[x]['out_of_range_evaluates'].append(j) for x in k['out_of_range_evaluations']]
             ev_df=ev_df.loc[:,check_mean]
             #Include the questión categories in DataFrame for evaluation
-            categories = ['Disposición', 'Disposición', 'Disposición', 'Propósito', 'Propósito', 'Colaboración', 'Colaboración', 'Colaboración', 'Colaboración', 'Desempeño', 'Desempeño', 'Desempeño', ' Crecimiento', 'Crecimiento','Proactividad','Proactividad','Proactividad','General']
+            categories = ['Disposición', 'Disposición', 'Disposición', 'Propósito', 'Propósito', 'Colaboración', 'Colaboración', 'Colaboración', 'Colaboración', 'Desempeño', 'Desempeño', 'Desempeño', 'Crecimiento', 'Crecimiento','Proactividad','Proactividad','Proactividad','General']
             ev_df['categorías'] = categories
             #final DataFrame for evaluation
             k['process_results'] = ev_df.copy(deep=True)
@@ -204,7 +211,7 @@ class EvaluationsAssessment:
         return True if dirct.find('_pkl') !=-1 else False
 
       pkl_files = [x for x in glob.glob(self.thispath + '/archivos/1_archivos de trabajo'+'/*') if check_pckl_file(x)] 
-      print(pkl_files)
+      
       past_evaluations = []
       for i in pkl_files:
         with open(i, 'rb') as fr:
@@ -341,7 +348,7 @@ class EvaluationsAssessment:
       colabs_mean = []
       colabs = []
       areas = []
-      categ_df = pd.DataFrame(index=range(8))
+      categ_df = pd.DataFrame(index=range(7))
       #columns=list(self.__evaluation_data.keys())
       i=0
       for j, k in self.__evaluation_data.items():
@@ -360,7 +367,7 @@ class EvaluationsAssessment:
       sort_collabs['means'] = colabs_mean
       sort_collabs.sort_values('means', ascending=False, inplace=True)
 
-      plt.figure(figsize=(6,3))
+      plt.figure(figsize=(8,5))
       plt.bar(sort_collabs.index, sort_collabs['means'], width=0.8)
       plt.xticks(rotation=60, fontsize=7)
       plt.yticks(fontsize=7)
@@ -375,9 +382,9 @@ class EvaluationsAssessment:
       areas_df = sort_collabs.groupby(['areas']).mean()
       areas_df.sort_values('means', ascending=False, inplace=True)
       
-      plt.figure(figsize=(3,2))
+      plt.figure(figsize=(4,4))
       plt.bar(areas_df.index, areas_df['means'], width=0.8, color = '#FFB85C')
-      plt.xticks(rotation=90, fontsize=6)
+      plt.xticks(rotation=60, fontsize=8)
       plt.yticks(fontsize=6)
       plt.ylim(1,5)
       plt.title('Desempeño por departamento', fontdict={'fontsize': 9})
@@ -414,7 +421,7 @@ class EvaluationsAssessment:
       self_evalution_df = results[['Autoevaluación','categorías']]
       self_evaluation_by_catg_df = self_evalution_df.groupby(['categorías']).mean()
       self_evaluation_by_catg_df = self_evaluation_by_catg_df.append(self_evaluation_by_catg_df.iloc[0,:])
-      
+
 
       allcolabs_df  = results.drop(['Autoevaluación'], axis=1)
       #self.__evaluation_data[collab]['global evaluation'] = allcolabs_df.mean().mean()
@@ -424,7 +431,8 @@ class EvaluationsAssessment:
       #print('overall evaluation' + str(self.__evaluation_data['overall evaluation']))
       allcolabs_by_catg_df = allcolabs_df.groupby(['categorías']).mean().mean(axis=1).to_frame()
       allcolabs_by_catg_df = allcolabs_by_catg_df.append(allcolabs_by_catg_df.iloc[0,:])
-      
+
+
       categories = allcolabs_by_catg_df.index
   
       label_loc = np.linspace(start=0, stop=2 * np.pi, num=len(categories))
@@ -438,7 +446,7 @@ class EvaluationsAssessment:
       lines, labels = plt.thetagrids(np.degrees(label_loc), labels=categories)
       plt.xticks(fontsize=7)
       plt.yticks(fontsize=7)
-      plt.legend(loc='best', fontsize=7)
+      plt.legend(loc='center', fontsize=7)
       plt.savefig(self.thispath + '/archivos/1_archivos de trabajo/S2F2_radar_category.png', bbox_inches = 'tight')
       plt.clf()
       
@@ -478,7 +486,7 @@ class EvaluationsAssessment:
     def collaborator_subsubmenu_details(self, collab):
       #print('He llegado')  
       out_of_range = len(self.__evaluation_data[collab]['out_of_range_evaluations'])
-      incomplete = len(self.__evaluation_data[collab]['evaluators']) + 1 - len(self.__evaluation_data[collab]['use_columns'])
+      incomplete = len(self.__evaluation_data[collab]['removed_evaluators'])
       valid = len(self.__evaluation_data[collab]['evaluators']) - out_of_range - incomplete
 
       range_values = [out_of_range, incomplete, valid]
@@ -520,21 +528,99 @@ class EvaluationsAssessment:
             repet -= 1
           
 
-      print(av_values)
-      print(dates)
-
+      #print(av_values)
+      #print(dates)
+      plt.figure(figsize=(5,5))
       plt.plot(dates, av_values, label = 'evaluación global')
-      plt.title(f'Evolución de {collab}')
-      plt.xlabel("fecha de evaluación", fontdict={'fontsize': 5})
+      plt.title(f'Evolución de {collab}', fontdict={'fontsize': 8})
+      plt.xlabel("fecha de evaluación", fontdict={'fontsize': 7})
       plt.xticks(rotation = 45, fontsize=6)
       plt.yticks(fontsize=6)
-      plt.legend(loc='best', fontsize = 5)
+      plt.legend(loc='best', fontsize = 7)
       plt.ylim(1,5)
       plt.savefig(self.thispath + '/archivos/1_archivos de trabajo/S5F2_global evolution.png', bbox_inches = 'tight')
       
       plt.clf()
       
+      #EVOLUTION GRAPH BY CATEGORY
+
+      #----------- Disposición ----------------------------
+      disposition_values = [x[collab]['process_results'][x[collab]['process_results']['categorías']=='Disposición'].mean().mean() for x in list_of_evaluations]    
+      #----------- Propósito ----------------------------
+      proposito_values = [x[collab]['process_results'][x[collab]['process_results']['categorías']=='Propósito'].mean().mean() for x in list_of_evaluations]
+      #----------- Colaboración ----------------------------
+      colaboracion_values = [x[collab]['process_results'][x[collab]['process_results']['categorías']=='Colaboración'].mean().mean() for x in list_of_evaluations]
+
+      #----------- Desempeño ----------------------------
+      desempenyo_values = [x[collab]['process_results'][x[collab]['process_results']['categorías']=='Desempeño'].mean().mean() for x in list_of_evaluations]
+      #----------- Crecimiento ----------------------------
+      crecimiento_values = [x[collab]['process_results'][x[collab]['process_results']['categorías']=='Crecimiento'].mean().mean() for x in list_of_evaluations]
+      #----------- Proactividad ----------------------------
+      proactividad_values = [x[collab]['process_results'][x[collab]['process_results']['categorías']=='Proactividad'].mean().mean() for x in list_of_evaluations]
+      #----------- General ----------------------------
+      general_values = [x[collab]['process_results'][x[collab]['process_results']['categorías']=='General'].mean().mean() for x in list_of_evaluations]
+
+      #['Disposición', 'Propósito', 'Colaboración', 'Desempeño', ' Crecimiento', 'Proactividad','General']
+      plt.figure(figsize=(5,5))
+      plt.plot(dates, disposition_values, label = 'Disposición')
+      plt.plot(dates, proposito_values, label = 'Propósito')
+      plt.plot(dates, colaboracion_values, label = 'Colaboración')
+      plt.plot(dates, desempenyo_values, label = 'Desempeño')
+      plt.plot(dates, crecimiento_values, label = 'Crecimiento')
+      plt.plot(dates, proactividad_values, label = 'Proactividad')
+      plt.plot(dates, general_values, label = 'General')
+      plt.title(f'Evolución de {collab} por categorías', fontdict={'fontsize': 8})
+      plt.xlabel("fecha de evaluación", fontdict={'fontsize': 7})
+      plt.xticks(rotation = 45, fontsize=6)
+      plt.yticks(fontsize=6)
+      plt.legend(loc='best', fontsize = 7)
+      plt.ylim(1,5)
+      plt.savefig(self.thispath + '/archivos/1_archivos de trabajo/S5F2_evolution_by_categories.png', bbox_inches = 'tight')
+      
+      plt.clf()
       #for i in list_of_evaluations:
+    
+
+    def create_area_submenu_stats(self, department):
+      
+      area_collabs = []
+      collabs_results = []
+
+      person_category_df = pd.DataFrame(index=self.categorias)
+
+      for j,k in self.__evaluation_data.items():
+        if k['area'] == department:
+          area_collabs.append(j)
+          collabs_results.append(k['global evaluation'])
+          person_category_df[j] = k['process_results'].drop(['Autoevaluación'], axis =1).groupby(['categorías']).mean().mean(axis=1)
+
+      #print(person_category_df)
+
+      collabs_df = pd.DataFrame(index=area_collabs)
+      collabs_df['data'] = collabs_results
+      collabs_df.sort_values('data', ascending=False, inplace=True)
+      
+      plt.figure(figsize=(6,4))
+      plt.bar(collabs_df.index, collabs_df['data'], width=0.7)
+      plt.xticks(rotation=70, fontsize=6)
+      plt.yticks(fontsize=6)
+      plt.title(f'Personal del área de {department}', fontdict={'fontsize': 7})
+      plt.ylim(1,5)
+      plt.savefig(self.thispath + '/archivos/1_archivos de trabajo/S6F2_area_collaborators.png', bbox_inches = 'tight')
+      plt.clf()
+
+
+      fig, ax = plt.subplots(figsize=(6,6))
+      sb.heatmap(person_category_df.T, cmap="Blues", vmin=1, vmax=5, linewidth= 0.3, cbar_kws={"shrink":.8})
+      ax.xaxis.tick_top()
+      plt.xticks(rotation=45, fontsize=6)
+      plt.yticks(fontsize=6)
+      plt.xlabel('')
+      plt.ylabel('')
+      plt.savefig(self.thispath + '/archivos/1_archivos de trabajo/S6F2_area_heatmap.png', bbox_inches = 'tight')
+      plt.clf()
+
+      #print('llegamos al submenu de areas: '+department)
 
 
 

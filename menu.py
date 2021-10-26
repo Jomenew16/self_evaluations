@@ -23,6 +23,7 @@ class Menu(Frame):
        self.master = master
        self.first_try = True
        self.thispath = os.getcwd()
+       #self.areas = []
        #self.first_try_comp = True
        #self.first_try_formats = True
 
@@ -379,8 +380,8 @@ class Menu(Frame):
       backBut = Button(frame4, text="Menú principal", command = mainmenu)
       backBut.grid(row=0, column=1)
 
-      ansevBut = Button(frame4, text="Ver evaluación anterior")
-      ansevBut.grid(row=0, column=2, padx = 5)
+      #ansevBut = Button(frame4, text="Ver evaluación anterior")
+      #ansevBut.grid(row=0, column=2, padx = 5)
       
    
    # -------------------- Global statistics menu ---------------------------------------------------
@@ -429,11 +430,11 @@ class Menu(Frame):
       S2F1_bar_allCollabs.pack(side='left')
       #S2F1_bar_allCollabs.grid(row=0, column=0)   
 
-      S2F3_bar_img = PhotoImage(file = self.thispath + '/archivos/1_archivos de trabajo/S2F3_bar_category.png')
-      S2F3_bar_category = Label(frame3, image=S2F3_bar_img)
-      S2F3_bar_category.config(relief='ridge', borderwidth='3')
-      S2F3_bar_category.image = S2F3_bar_img
-      S2F3_bar_category.pack(side='top')
+      #S2F3_bar_img = PhotoImage(file = self.thispath + '/archivos/1_archivos de trabajo/S2F3_bar_category.png')
+      #S2F3_bar_category = Label(frame3, image=S2F3_bar_img)
+      #S2F3_bar_category.config(relief='ridge', borderwidth='3')
+      #S2F3_bar_category.image = S2F3_bar_img
+      #S2F3_bar_category.pack(side='top')
       
       S2F2_bar_img = PhotoImage(file = self.thispath + '/archivos/1_archivos de trabajo/S2F2_bar_area.png')
       S2F2_bar_area = Label(frame4, image=S2F2_bar_img)
@@ -442,13 +443,6 @@ class Menu(Frame):
       S2F2_bar_area.pack(side='top')
       #S2F1_bar_allCollabs.grid(row=0, column=1)
 
-
-      #S1F3_hbar_img = PhotoImage(file = self.thispath + '/archivos/1_archivos de trabajo/S1F3_hbars_completion.png')
-      #S1F3_hbar_completion = Label(frame3, image= S1F3_hbar_img)
-      #S1F3_hbar_completion.config(relief='ridge', borderwidth='2')
-      #S1F3_hbar_completion.image = S1F3_hbar_img
-      #S1F3_hbar_completion.pack(side='left')
-      #Final frame next options
 
       def backtomainmenu():
          frame1.destroy()
@@ -474,10 +468,18 @@ class Menu(Frame):
          frame5.destroy()
          self.menu_collaborator_first_submenu(date, eval_instance)
 
+      def area_menu():
+         frame1.destroy()
+         frame2.destroy()
+         frame3.destroy()
+         frame4.destroy()
+         frame5.destroy()
+         self.menu_areas_submenu(date, eval_instance)
+   
       findCButton = Button(frame5, text = 'Ver colaborador', command= collab_menu)
       findCButton.grid(row=0, column=0)
 
-      findDButton = Button(frame5, text = 'Ver departamento')
+      findDButton = Button(frame5, text = 'Ver departamento', command=area_menu)
       findDButton.grid(row=0, column=1, padx=5)
 
       backButton =Button(frame5, text = 'Volver', command=backtofirststats)
@@ -634,11 +636,19 @@ class Menu(Frame):
          frame4.destroy()
          frame5.destroy()
          self.menu_collaborator_evolution_submenu(date, eval_instance, collab.get())
+      
+      def area_menu():
+         frame1.destroy()
+         frame2.destroy()
+         frame3.destroy()
+         frame4.destroy()
+         frame5.destroy()
+         self.menu_areas_submenu(date, eval_instance)
 
       findCButton = Button(frame5, text = 'Ver evolución', command= evolution_menu)
       findCButton.grid(row=0, column=0)
 
-      findDButton = Button(frame5, text = 'Ver departamento')
+      findDButton = Button(frame5, text = 'Ver departamento', command=area_menu)
       findDButton.grid(row=0, column=1, padx=5)
 
       backButton =Button(frame5, text = 'Volver', command=backtogeneralstats)
@@ -746,6 +756,12 @@ class Menu(Frame):
       S5F2_gb_evolutions_line.image = S5F2_gb_evolutions_line_img
       S5F2_gb_evolutions_line.grid(row=0, column=0)
 
+      S5F2_cat_evolutions_line_img = PhotoImage(file = self.thispath + '/archivos/1_archivos de trabajo/S5F2_evolution_by_categories.png')
+      S5F2_cat_evolutions_line = Label(frame2, image=S5F2_cat_evolutions_line_img)
+      S5F2_cat_evolutions_line.config(relief='ridge', borderwidth='3')
+      S5F2_cat_evolutions_line.image = S5F2_cat_evolutions_line_img
+      S5F2_cat_evolutions_line.grid(row=0, column=1)
+
       # End menú
       def backtomainmenu():
          frame1.destroy()
@@ -764,6 +780,104 @@ class Menu(Frame):
 
       initButton = Button(frame3, text = 'Inicio', command = backtomainmenu)
       initButton.grid(row=0, column=3) 
+
+# -------------------- Subm6 - Area statistics ---------------------------------------------------
+
+   def menu_areas_submenu(self, date, eval_instance):      
+      #Set date and a selection combo box and button to select the collaborator
+      frame1=Frame(self.master)
+      frame1.grid(row=0, columnspan=2)
+
+      frame2 = Frame(self.master) # categories chart
+      frame2.grid(row=1, column=0)
+
+      frame3 = Frame(self.master) # evaluation results
+      frame3.grid(row=2, column=0)
+
+      frame4 = Frame(self.master) # bottom menu
+      frame4.grid(row=2, columnspan=2)
+
+      frame5 = Frame(self.master) # bottom menu
+      frame5.grid(row=3, columnspan=2)
+
+
+      evDate = Label(frame1, text=date.strftime('%d/%m/%Y'), font=('Open Sans', 9))
+      evDate.grid(sticky='W', row=0, column=0, padx=10)
+      evDate.config(bg='white')
+
+      selectLable = Label(frame1, text = "Selecciona area:")
+      selectLable.grid(sticky='E', row=0, column=1)
+
+      #combo box and selection of collaborator
+      
+      #list of collaborators
+      areas = eval_instance.areas  #list of collaborators, in case we need them for combo box
+      #areas = list(eval_instance.evaluation_data[collaborators[0]][])
+      area = StringVar()
+      area.set(areas[0])
+      #collaborator: str
+          
+      def areas_statistics():
+         #global collaborator 
+         department = area.get()
+         
+         eval_instance.create_area_submenu_stats(department)
+         set_charts() 
+
+
+
+      comboCollabs = ttk.Combobox(frame1, state='readonly', textvariable=area) #
+      comboCollabs['values'] = areas
+      comboCollabs.grid(sticky='W', row=0, column=2)
+        
+      confirmBut = Button(frame1, text = "Ver evaluación", command=areas_statistics)
+      confirmBut.grid(sticky='W', row=0, column=3, padx=10)
+
+
+      def set_charts():
+         for widget in frame2.winfo_children():
+            widget.destroy()
+         #for widget in frame3.winfo_children():
+         #   widget.destroy()
+         #for widget in frame4.winfo_children():
+         #   widget.destroy()
+   #-------------------- department statistics----------------------
+         S6F2_dept_collabs_bar_img = PhotoImage(file = self.thispath + '/archivos/1_archivos de trabajo/S6F2_area_collaborators.png')
+         S6F2_dept_collabs_bar = Label(frame2, image=S6F2_dept_collabs_bar_img)
+         S6F2_dept_collabs_bar.config(relief='ridge', borderwidth='3')
+         S6F2_dept_collabs_bar.image = S6F2_dept_collabs_bar_img
+         S6F2_dept_collabs_bar.grid(row=0, column=0)
+
+         S6F2_dept_catg_heat_img = PhotoImage(file = self.thispath + '/archivos/1_archivos de trabajo/S6F2_area_heatmap.png')
+         S6F2_dept_catg_heat = Label(frame2, image=S6F2_dept_catg_heat_img)
+         S6F2_dept_catg_heat.config(relief='ridge', borderwidth='3')
+         S6F2_dept_catg_heat.image = S6F2_dept_catg_heat_img
+         S6F2_dept_catg_heat.grid(row=0, column=1)
+
+
+
+      def backtomainmenu():
+         frame1.destroy()
+         frame2.destroy()
+         frame3.destroy()
+         frame4.destroy()
+         frame5.destroy()
+         self.main_menu_widgets()
+
+      def backtoglobalstats():
+         frame1.destroy()
+         frame2.destroy()
+         frame3.destroy()
+         frame4.destroy()
+         frame5.destroy()
+         self.global_stats_menu(date, eval_instance)
+      
+      backButton =Button(frame3, text = 'Volver', command=backtoglobalstats)
+      backButton.grid(row=0, column=0, padx=10)
+
+      initButton = Button(frame3, text = 'Inicio', command = backtomainmenu)
+      initButton.grid(row=0, column=1) 
+
 
 
 if __name__ == '__main__':
