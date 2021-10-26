@@ -39,7 +39,7 @@ class EvaluationsAssessment:
     #  return file_path.removesuffix(file_name)
 #---------------------------------Read the last evaluation in the archivos directory------------------
     
-    def read_directories(self, ev_tolerance: float = 0.3):
+    def read_directories(self, ev_tolerance: float = 0.35):
         #print("aquí tamos")
         #read the last evaluation directory from /archivos
           
@@ -89,6 +89,7 @@ class EvaluationsAssessment:
               'use_columns': None,
               'autofilled_NA': 0,
               'total_values': 0,
+              'tolerance': ev_tolerance,
               'out_of_range_evaluations': [],
               'out_of_range_evaluates': [],
               'global evaluation': 0.0,
@@ -145,12 +146,13 @@ class EvaluationsAssessment:
             #Include the questión categories in DataFrame for evaluation
             categories = ['Disposición', 'Disposición', 'Disposición', 'Propósito', 'Propósito', 'Colaboración', 'Colaboración', 'Colaboración', 'Colaboración', 'Desempeño', 'Desempeño', 'Desempeño', ' Crecimiento', 'Crecimiento','Proactividad','Proactividad','Proactividad','General']
             ev_df['categorías'] = categories
-            
-            
             #final DataFrame for evaluation
             k['process_results'] = ev_df.copy(deep=True)
+            ev_df.drop(['Autoevaluación'], axis=1, inplace=True)
+            k['global evaluation'] = ev_df.mean().mean()
+            k['overall evaluation'] = ev_df.iloc[-1:,:].mean(axis=1).mean()
 
-#       
+        self.save_data()
 
         #print(self.__evaluation_data['Debra Brown'])
         #print(self.__evaluation_data['Addie Smith'])
@@ -162,6 +164,10 @@ class EvaluationsAssessment:
     @property
     def evaluation_data(self):
       return self.__evaluation_data
+
+    @evaluation_data.setter
+    def evaluation_data(self, value):
+      self.__evaluation_data = value
 
 
     def save_data(self):
@@ -197,14 +203,14 @@ class EvaluationsAssessment:
       def check_pckl_file(dirct:str):
         return True if dirct.find('_pkl') !=-1 else False
 
-      pkl_files = [x for x in glob.glob('./archivos/'+'/*') if check_pckl_file(x)] 
+      pkl_files = [x for x in glob.glob(self.thispath + '/archivos/1_archivos de trabajo'+'/*') if check_pckl_file(x)] 
       print(pkl_files)
       past_evaluations = []
       for i in pkl_files:
         with open(i, 'rb') as fr:
           past_evaluations.append(pickle.Unpickler(fr).load())
 
-      print(past_evaluations)
+      return past_evaluations
         
 
 #----------------------------Submenu 1. Preliminary checking of the evaluation data with the design. Files are complete---------------
@@ -411,8 +417,9 @@ class EvaluationsAssessment:
       
 
       allcolabs_df  = results.drop(['Autoevaluación'], axis=1)
-      self.__evaluation_data[collab]['global evaluation'] = allcolabs_df.mean().mean()
-      self.__evaluation_data[collab]['overall evaluation'] = allcolabs_df.iloc[-1:,:].mean(axis=1).mean()
+      #self.__evaluation_data[collab]['global evaluation'] = allcolabs_df.mean().mean()
+      #self.__evaluation_data[collab]['overall evaluation'] = allcolabs_df.iloc[-1:,:].mean(axis=1).mean()
+      
       #print('global evaluation' + str(self.__evaluation_data['global evaluation']))
       #print('overall evaluation' + str(self.__evaluation_data['overall evaluation']))
       allcolabs_by_catg_df = allcolabs_df.groupby(['categorías']).mean().mean(axis=1).to_frame()
@@ -456,7 +463,7 @@ class EvaluationsAssessment:
       plt.xticks(fontsize= 6)
       plt.title('Detalle de evaluación por preguntas', fontdict={'fontsize': 9})
       plt.savefig(self.thispath + '/archivos/1_archivos de trabajo/S2F3_questions_evaluation.png', bbox_inches = 'tight')
-      plt.clf
+      plt.clf()
 
       #plt.bar(categ_sorted.index, categ_sorted, width=0.8, color='#6A1B9A')
       #plt.xticks(rotation = 90, fontsize=6)
@@ -469,9 +476,9 @@ class EvaluationsAssessment:
 
 #----------------------------Submenu 4. Collab evaluation details---------------
     def collaborator_subsubmenu_details(self, collab):
-      print('He llegado')  
+      #print('He llegado')  
       out_of_range = len(self.__evaluation_data[collab]['out_of_range_evaluations'])
-      incomplete = len(self.__evaluation_data[collab]['full_columns']) - len(self.__evaluation_data[collab]['use_columns'])
+      incomplete = len(self.__evaluation_data[collab]['evaluators']) + 1 - len(self.__evaluation_data[collab]['use_columns'])
       valid = len(self.__evaluation_data[collab]['evaluators']) - out_of_range - incomplete
 
       range_values = [out_of_range, incomplete, valid]
@@ -479,7 +486,7 @@ class EvaluationsAssessment:
       colors = ['#FF0000', '#b24e0c','#62EF04']
       offset = (0, 0, 0.1)
 
-      print(range_values)
+      #print(range_values)
       def abs_value_range (val):
          a  = round(val/100*(out_of_range + incomplete +valid), 0)
          return a
@@ -489,6 +496,53 @@ class EvaluationsAssessment:
       plt.axis("equal")
       plt.savefig(self.thispath + '/archivos/1_archivos de trabajo/S4F2_valid_evaluations_pie.png', bbox_inches = 'tight')
       plt.clf()
+
+
+    def collaborator_evolution(self, collab):
+      
+      #leer todos los archivos de evaluaciones pasadas.
+
+      list_of_evaluations = self.read_data()
+      #print(list_of_evaluations[0][collab])
+
+      av_values = [x[collab]['global evaluation'] for x in list_of_evaluations]
+      dates = [x[collab]['date'].strftime('%d/%m/%Y') for x in list_of_evaluations]
+      
+      for i in dates:
+        if dates.count(i) > 1:
+          repet= dates.count(i) -1
+          #first_elem = dates.index(i)
+          while repet != 0:
+            inverse_dates = dates[::-1]
+            last_elem =inverse_dates.index(i)
+            inverse_dates[last_elem]=i+'_v'+str(repet)
+            dates= inverse_dates[::-1]
+            repet -= 1
+          
+
+      print(av_values)
+      print(dates)
+
+      plt.plot(dates, av_values, label = 'evaluación global')
+      plt.title(f'Evolución de {collab}')
+      plt.xlabel("fecha de evaluación", fontdict={'fontsize': 5})
+      plt.xticks(rotation = 45, fontsize=6)
+      plt.yticks(fontsize=6)
+      plt.legend(loc='best', fontsize = 5)
+      plt.ylim(1,5)
+      plt.savefig(self.thispath + '/archivos/1_archivos de trabajo/S5F2_global evolution.png', bbox_inches = 'tight')
+      
+      plt.clf()
+      
+      #for i in list_of_evaluations:
+
+
+
+
+
+
+
+
 #if __name__ == '__main__':
  #   test = EvaluationsAssessment()
     #test.read_directories()

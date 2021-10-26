@@ -565,12 +565,12 @@ class Menu(Frame):
          #S3F3_questionsbar.pack(side='top')
 
          # Detail of the questions ratios. First, include the general results
-         detail_quests_Label = Label(frame3, text='Detalles')
-         detail_quests_Label.grid(row=1, column=0)
-         
-         detail_quests_Button = Button(frame3, text='Ver más')
-         detail_quests_Button.grid(row=1, column=1)
-
+      #   detail_quests_Label = Label(frame3, text='Detalles')
+      #   detail_quests_Label.grid(row=1, column=0)
+      #   
+      #   detail_quests_Button = Button(frame3, text='Ver más')
+      #   detail_quests_Button.grid(row=1, column=1)
+#
    #---------------- FRAME 4. SUMMARY and EVALUATION STATS-----------------------------------------------
          def qualification(x):
             if x < 2.9:
@@ -633,7 +633,7 @@ class Menu(Frame):
          frame3.destroy()
          frame4.destroy()
          frame5.destroy()
-         self.menu_collaborator_evolution_submenu(date, eval_instance)
+         self.menu_collaborator_evolution_submenu(date, eval_instance, collab.get())
 
       findCButton = Button(frame5, text = 'Ver evolución', command= evolution_menu)
       findCButton.grid(row=0, column=0)
@@ -676,8 +676,33 @@ class Menu(Frame):
       S4F2_pieEvaluations = Label(frame2, image=S4F2_pieEvaluations_img)
       S4F2_pieEvaluations.config(relief='ridge', borderwidth='3')
       S4F2_pieEvaluations.image = S4F2_pieEvaluations_img
-      S4F2_pieEvaluations.grid(row=0, column=0)
+      S4F2_pieEvaluations.grid(rowspan=2, column=0)
 
+      S4F2_out_of_range_explant_Label = Label(frame2, text = 'Las evaluaciones fuera de rango son las que se han desviado \nun determinado porcentaje de la media')
+      S4F2_out_of_range_explant_Label.grid(row=0, column=1, columnspan=3, sticky='N')
+      
+      S4F2_out_of_range_modif_Label = Label(frame2, text = 'Modifica el rango de sensibilidad (%)')
+      S4F2_out_of_range_modif_Label.grid(row=1, column=1)
+
+      tol_range = IntVar()
+      tol_range.set(round(eval_instance.evaluation_data[collaborator]['tolerance']*100))
+
+      def newrange():
+         #eval_instance.evaluation_data[collaborator]['tolerance'] = (tol_range.get())/100
+         eval_instance.read_directories(tol_range.get()/100)
+         eval_instance.save_data()
+         eval_instance.collaborator_subsubmenu_details(collaborator)
+         frame1.destroy()
+         frame2.destroy()
+         frame3.destroy()
+         self.menu_details_evaluation(date, eval_instance, collaborator)         
+
+
+      S4F2_out_of_range_modif_Entry = Entry(frame2, textvariable= tol_range)
+      S4F2_out_of_range_modif_Entry.grid(row=1, column=2, sticky='W')
+
+      S4F2_out_of_range_modif_Button = Button(frame2, text = 'cambiar', command=newrange)
+      S4F2_out_of_range_modif_Button.grid(row=1, column=3, sticky='W')
 
       def backtomainmenu():
          frame1.destroy()
@@ -700,8 +725,46 @@ class Menu(Frame):
 
 # -------------------- Subm5 - Collaborator statistics ---------------------------------------------------
 
-   def menu_collaborator_evolution_submenu(self, date, eval_instance):
-      pass
+   def menu_collaborator_evolution_submenu(self, date, eval_instance, collaborator):
+      frame1=Frame(self.master)
+      frame1.grid(row=0, columnspan=2)
+
+      frame2 = Frame(self.master) # categories chart
+      frame2.grid(row=1, column=0)
+
+      frame3 = Frame(self.master) # categories chart
+      frame3.grid(row=2, column=0)
+
+      collabLabel = Label(frame1, text = collaborator.upper(), font=('Open Sans', 10, 'bold'))
+      collabLabel.grid(sticky='E', row=0, column=0)
+
+      eval_instance.collaborator_evolution(collaborator)
+
+      S5F2_gb_evolutions_line_img = PhotoImage(file = self.thispath + '/archivos/1_archivos de trabajo/S5F2_global evolution.png')
+      S5F2_gb_evolutions_line = Label(frame2, image=S5F2_gb_evolutions_line_img)
+      S5F2_gb_evolutions_line.config(relief='ridge', borderwidth='3')
+      S5F2_gb_evolutions_line.image = S5F2_gb_evolutions_line_img
+      S5F2_gb_evolutions_line.grid(row=0, column=0)
+
+      # End menú
+      def backtomainmenu():
+         frame1.destroy()
+         frame2.destroy()
+         frame3.destroy()
+         self.main_menu_widgets()
+
+      def backtocollabstats():
+         frame1.destroy()
+         frame2.destroy()
+         frame3.destroy()
+         self.menu_collaborator_first_submenu(date, eval_instance)
+      
+      backButton =Button(frame3, text = 'Volver', command=backtocollabstats)
+      backButton.grid(row=0, column=2, padx=10)
+
+      initButton = Button(frame3, text = 'Inicio', command = backtomainmenu)
+      initButton.grid(row=0, column=3) 
+
 
 if __name__ == '__main__':
 
